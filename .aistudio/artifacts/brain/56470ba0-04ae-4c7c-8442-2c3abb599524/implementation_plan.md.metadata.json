@@ -1,0 +1,6 @@
+{
+  "summary":  "Architectural and UX implementation plan for VoltBet, a standalone client-side Sportsbook and Telegram Mini App built with Next.js App Router, strict API-Football v3 data schemas, ETB wallet management, live odds drift simulation, and interactive screenshot deposit workflows.",
+  "updatedAt":  "2026-11-10T10:07:01.253819286Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

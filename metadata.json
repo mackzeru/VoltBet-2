@@ -1,0 +1,6 @@
+{
+  "name": "VoltBet Sportsbook & TMA",
+  "description": "High-frequency client-side Football Sportsbook and Telegram Mini App featuring live API-Football v3 markets, real-time odds drift, parlay calculator, early cashout, and Ethiopian Birr (ETB) screenshot deposit verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
