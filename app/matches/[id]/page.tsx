@@ -106,12 +106,12 @@ export default function MatchDetailsPage() {
   ];
 
   return (
-    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 space-y-4">
+    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 space-y-4">
       {/* Top Bar */}
       <div className="flex items-center justify-between gap-2">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#94A3B8] hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Lobby</span>
@@ -121,29 +121,29 @@ export default function MatchDetailsPage() {
           <button
             type="button"
             onClick={triggerManualOddsDrift}
-            className="min-h-[34px] px-3 py-1 rounded-xl bg-[#121721] hover:bg-[#1E2638] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1 cursor-pointer"
+            className="min-h-[34px] px-3 py-1 rounded-xl bg-white dark:bg-[#121721] hover:bg-slate-100 dark:hover:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] text-xs font-semibold text-slate-900 dark:text-white inline-flex items-center gap-1 cursor-pointer"
           >
-            <Zap className="w-3.5 h-3.5 text-[#00E676]" />
+            <Zap className="w-3.5 h-3.5 text-emerald-600 dark:text-[#00E676]" />
             <span>Pulse Odds</span>
           </button>
           {isLive && (
             <button
               type="button"
               onClick={toggleRandomMarketLock}
-              className="min-h-[34px] px-3 py-1 rounded-xl bg-[#121721] hover:bg-[#1E2638] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1 cursor-pointer"
+              className="min-h-[34px] px-3 py-1 rounded-xl bg-white dark:bg-[#121721] hover:bg-slate-100 dark:hover:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] text-xs font-semibold text-slate-900 dark:text-white inline-flex items-center gap-1 cursor-pointer"
             >
-              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <Lock className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
               <span>{isLocked ? 'Unlock' : 'VAR Lock'}</span>
             </button>
           )}
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-start gap-6">
+      <div className="flex flex-col lg:flex-row items-start gap-5 lg:gap-6">
         <div className="w-full flex-1 min-w-0 space-y-4">
           {/* Scoreboard Header Billboard */}
-          <section className="rounded-2xl bg-gradient-to-b from-[#1A2232] to-[#1E2638] border border-[#2A344B] p-4 sm:p-5 space-y-4">
-            <div className="flex items-center justify-between gap-2 text-xs text-[#94A3B8]">
+          <section className="rounded-2xl bg-gradient-to-b from-slate-100 to-white dark:from-[#1A2232] dark:to-[#1E2638] border border-slate-200 dark:border-[#2A344B] p-4 sm:p-5 space-y-4 shadow-xs">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-[#94A3B8]">
               <div className="flex items-center gap-2">
                 {fixture.league.logo && (
                   <TeamCrest
@@ -152,13 +152,15 @@ export default function MatchDetailsPage() {
                     size="xs"
                   />
                 )}
-                <span className="font-semibold text-white">{fixture.league.name}</span>
+                <span className="font-semibold text-slate-900 dark:text-white">
+                  {fixture.league.name}
+                </span>
                 <span aria-hidden="true">·</span>
                 <span>{fixture.league.round}</span>
               </div>
 
               <span className="inline-flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#00E676]" />
+                <MapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-[#00E676]" />
                 <span>{fixture.fixture.venue.name}</span>
               </span>
             </div>
@@ -173,7 +175,7 @@ export default function MatchDetailsPage() {
                   secondaryColor={fixture.teams.home.secondaryColor}
                   size="lg"
                 />
-                <h1 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
+                <h1 className="font-display text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                   {fixture.teams.home.name}
                 </h1>
               </div>
@@ -188,24 +190,24 @@ export default function MatchDetailsPage() {
                         {fixture.fixture.status.elapsed ?? 45}:{formattedSeconds}
                       </span>
                     </div>
-                    <div className="font-mono tabular-nums text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    <div className="font-mono tabular-nums text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                       {fixture.goals.home ?? 0}{' '}
-                      <span className="text-[#94A3B8]">-</span>{' '}
+                      <span className="text-slate-400 dark:text-[#94A3B8]">-</span>{' '}
                       {fixture.goals.away ?? 0}
                     </div>
                     {fixture.score.halftime.home !== null && (
-                      <span className="text-[11px] font-mono tabular-nums text-[#94A3B8]">
+                      <span className="text-[11px] font-mono tabular-nums text-slate-500 dark:text-[#94A3B8]">
                         HT {fixture.score.halftime.home}-{fixture.score.halftime.away}
                       </span>
                     )}
                   </>
                 ) : (
                   <>
-                    <span className="inline-flex items-center gap-1 text-xs font-mono text-[#00E676]">
+                    <span className="inline-flex items-center gap-1 text-xs font-mono text-emerald-600 dark:text-[#00E676]">
                       <Clock className="w-3.5 h-3.5" />
                       <span>Kickoff</span>
                     </span>
-                    <div className="font-mono tabular-nums text-xl sm:text-2xl font-bold text-white">
+                    <div className="font-mono tabular-nums text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                       {new Date(fixture.fixture.date).toLocaleTimeString([], {
                         hour: '2-digit',
                         minute: '2-digit',
@@ -224,21 +226,21 @@ export default function MatchDetailsPage() {
                   secondaryColor={fixture.teams.away.secondaryColor}
                   size="lg"
                 />
-                <h2 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
+                <h2 className="font-display text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                   {fixture.teams.away.name}
                 </h2>
               </div>
             </div>
 
             {fixture.events && fixture.events.length > 0 && (
-              <div className="pt-3 border-t border-[#2A344B]">
+              <div className="pt-3 border-t border-slate-200 dark:border-[#2A344B]">
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
                   {fixture.events.map((ev, index) => (
                     <div
                       key={`${ev.time.elapsed}-${index}`}
-                      className="rounded-xl bg-[#121721] border border-[#2A344B] px-2.5 py-1.5 shrink-0 flex items-center gap-2 text-xs"
+                      className="rounded-xl bg-white dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B] px-2.5 py-1.5 shrink-0 flex items-center gap-2 text-xs"
                     >
-                      <span className="font-mono tabular-nums font-bold text-[#00E676]">
+                      <span className="font-mono tabular-nums font-bold text-emerald-600 dark:text-[#00E676]">
                         {ev.time.elapsed}&apos;
                       </span>
                       <TeamCrest
@@ -246,10 +248,10 @@ export default function MatchDetailsPage() {
                         logo={ev.team.logo}
                         size="xs"
                       />
-                      <span className="font-semibold text-white">
+                      <span className="font-semibold text-slate-900 dark:text-white">
                         {ev.player.name}
                       </span>
-                      <span className="text-[#94A3B8] text-[11px]">
+                      <span className="text-slate-500 dark:text-[#94A3B8] text-[11px]">
                         {ev.detail}
                       </span>
                     </div>
@@ -261,15 +263,15 @@ export default function MatchDetailsPage() {
 
           {/* Match Statistics Visualizer */}
           {statRows.length > 0 && (
-            <section className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 space-y-3">
+            <section className="rounded-2xl bg-white dark:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] p-4 space-y-3 shadow-xs">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-[#00E676]" />
-                  <h2 className="font-display text-sm font-bold text-white">
+                  <BarChart3 className="w-4 h-4 text-emerald-600 dark:text-[#00E676]" />
+                  <h2 className="font-display text-sm font-bold text-slate-900 dark:text-white">
                     Match Stats
                   </h2>
                 </div>
-                <span className="text-xs text-[#94A3B8] font-mono">
+                <span className="text-xs text-slate-500 dark:text-[#94A3B8] font-mono">
                   {fixture.teams.home.shortCode} vs {fixture.teams.away.shortCode}
                 </span>
               </div>
@@ -278,15 +280,17 @@ export default function MatchDetailsPage() {
                 {statRows.map((row) => (
                   <div key={row.label} className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-mono tabular-nums font-bold text-white">
+                      <span className="font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                         {row.homeDisplay}
                       </span>
-                      <span className="text-[#94A3B8]">{row.label}</span>
-                      <span className="font-mono tabular-nums font-bold text-white">
+                      <span className="text-slate-500 dark:text-[#94A3B8]">
+                        {row.label}
+                      </span>
+                      <span className="font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                         {row.awayDisplay}
                       </span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-[#121721] overflow-hidden flex">
+                    <div className="h-1.5 rounded-full bg-slate-100 dark:bg-[#121721] overflow-hidden flex">
                       <div
                         className="h-full bg-[#00E676]"
                         style={{ width: `${row.homePct}%` }}
@@ -303,7 +307,7 @@ export default function MatchDetailsPage() {
           )}
 
           {/* Categorized Market Tabs */}
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-xl bg-[#121721] border border-[#2A344B]">
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-xl bg-slate-100 dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B]">
             {categories.map((cat) => (
               <button
                 key={cat.id}
@@ -311,8 +315,8 @@ export default function MatchDetailsPage() {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`min-h-[36px] px-3.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeCategory === cat.id
-                    ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                    : 'text-[#94A3B8] hover:text-white'
+                    ? 'bg-[#00E676] text-[#0B0E14] font-bold shadow-2xs'
+                    : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {cat.label}

@@ -46,7 +46,7 @@ export function TeamCrest({
 
   return (
     <div
-      className={`relative inline-flex items-center justify-center rounded-xl bg-[#121721] border border-[#2A344B] font-mono font-bold tracking-tight text-white shrink-0 select-none overflow-hidden ${dimensions}`}
+      className={`relative inline-flex items-center justify-center rounded-xl bg-white dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B] font-mono font-bold tracking-tight text-slate-900 dark:text-white shrink-0 select-none overflow-hidden shadow-2xs dark:shadow-none ${dimensions}`}
       title={name}
     >
       {hasExternalLogo ? (

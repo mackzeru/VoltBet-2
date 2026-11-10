@@ -39,22 +39,22 @@ export function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl bg-[#1E2638] border border-[#2A344B] overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] overflow-hidden shadow-2xl">
         {/* Modal Header */}
-        <div className="px-5 py-4 bg-[#121721] border-b border-[#2A344B] flex items-center justify-between">
+        <div className="px-5 py-4 bg-slate-50 dark:bg-[#121721] border-b border-slate-200 dark:border-[#2A344B] flex items-center justify-between">
           <div>
-            <h2 className="font-display text-base font-bold text-white">
-              VoltBet Account Access
+            <h2 className="font-display text-base font-bold text-slate-900 dark:text-white">
+              VoltBet Account
             </h2>
-            <p className="text-xs text-[#94A3B8]">
-              Sign in via Telegram, Ethiopian phone, or switch demo profiles
+            <p className="text-xs text-slate-500 dark:text-[#94A3B8]">
+              Sign in via Telegram, phone, or demo profile
             </p>
           </div>
           <button
             type="button"
             onClick={() => setIsAuthModalOpen(false)}
-            className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white"
+            className="p-1.5 rounded-lg text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>
@@ -62,14 +62,14 @@ export function AuthModal() {
 
         {/* Mode Switcher */}
         <div className="p-4 pb-0">
-          <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[#0B0E14] border border-[#2A344B]">
+          <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-slate-100 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B]">
             <button
               type="button"
               onClick={() => setTab('login')}
               className={`py-2 rounded-lg text-xs font-semibold cursor-pointer ${
                 tab === 'login'
                   ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                  : 'text-[#94A3B8] hover:text-white'
+                  : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Sign In
@@ -80,7 +80,7 @@ export function AuthModal() {
               className={`py-2 rounded-lg text-xs font-semibold cursor-pointer ${
                 tab === 'register'
                   ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                  : 'text-[#94A3B8] hover:text-white'
+                  : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Register
@@ -91,7 +91,7 @@ export function AuthModal() {
               className={`py-2 rounded-lg text-xs font-semibold cursor-pointer ${
                 tab === 'presets'
                   ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                  : 'text-[#94A3B8] hover:text-white'
+                  : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Demo Profiles
@@ -104,7 +104,7 @@ export function AuthModal() {
           <button
             type="button"
             onClick={() => switchDemoAccount(DEMO_ACCOUNT_PRESETS[0].profile.id)}
-            className="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#38BDF8]/15 hover:bg-[#38BDF8]/25 border border-[#38BDF8]/40 text-xs font-bold text-[#38BDF8] flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            className="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-xs font-bold text-sky-600 dark:text-[#38BDF8] flex items-center justify-center gap-2 cursor-pointer transition-colors"
           >
             <Send className="w-4 h-4" />
             <span>One-Tap Connect as @{tgUser.username}</span>
@@ -121,8 +121,8 @@ export function AuthModal() {
                     onClick={() => switchDemoAccount(item.profile.id)}
                     className={`w-full p-3 rounded-xl border text-left flex items-center justify-between gap-3 transition-colors cursor-pointer ${
                       isCurrent
-                        ? 'bg-[#00E676]/15 border-[#00E676]'
-                        : 'bg-[#121721] hover:bg-[#1A2232] border-[#2A344B]'
+                        ? 'bg-emerald-500/15 dark:bg-[#00E676]/15 border-emerald-500 dark:border-[#00E676]'
+                        : 'bg-slate-50 dark:bg-[#121721] hover:bg-slate-100 dark:hover:bg-[#1A2232] border-slate-200 dark:border-[#2A344B]'
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
@@ -137,24 +137,24 @@ export function AuthModal() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold text-white truncate">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
                             {item.profile.fullName}
                           </span>
-                          <span className="text-[10px] font-mono text-[#00E676]">
+                          <span className="text-[10px] font-mono text-emerald-600 dark:text-[#00E676]">
                             · {item.profile.vipTier}
                           </span>
                         </div>
-                        <span className="text-[11px] text-[#94A3B8] font-mono block truncate">
+                        <span className="text-[11px] text-slate-500 dark:text-[#94A3B8] font-mono block truncate">
                           {item.profile.phone}
                         </span>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <span className="font-mono tabular-nums text-xs font-bold text-white block">
+                      <span className="font-mono tabular-nums text-xs font-bold text-slate-900 dark:text-white block">
                         {item.initialBalance.toLocaleString()} ETB
                       </span>
-                      <span className="text-[10px] text-[#00E676] font-mono">
+                      <span className="text-[10px] text-emerald-600 dark:text-[#00E676] font-mono">
                         +{item.initialBonus.toLocaleString()} Bonus
                       </span>
                     </div>
@@ -166,55 +166,55 @@ export function AuthModal() {
             <form onSubmit={handleFormSubmit} className="space-y-3.5">
               {tab === 'register' && (
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-[#94A3B8]">
+                  <label className="text-xs font-medium text-slate-600 dark:text-[#94A3B8]">
                     Full Name
                   </label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <User className="w-4 h-4 text-slate-400 dark:text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Dawit Tadesse"
-                      className="w-full h-11 pl-9 pr-3 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-white"
+                      className="w-full h-11 pl-9 pr-3 rounded-xl bg-slate-50 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-slate-900 dark:text-white"
                     />
                   </div>
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-xs font-medium text-[#94A3B8]">
+                <label className="text-xs font-medium text-slate-600 dark:text-[#94A3B8]">
                   Ethiopian Mobile Number
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Phone className="w-4 h-4 text-slate-400 dark:text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+251 911 248 900"
-                    className="w-full h-11 pl-9 pr-3 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-white"
+                    className="w-full h-11 pl-9 pr-3 rounded-xl bg-slate-50 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-medium text-[#94A3B8]">
+                <label className="text-xs font-medium text-slate-600 dark:text-[#94A3B8]">
                   Password / PIN
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-slate-400 dark:text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-11 pl-9 pr-3 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-white"
+                    className="w-full h-11 pl-9 pr-3 rounded-xl bg-slate-50 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
 
               {tab === 'register' && (
-                <div className="rounded-xl bg-[#00E676]/10 border border-[#00E676]/30 p-2.5 flex items-center gap-2 text-xs text-[#00E676]">
+                <div className="rounded-xl bg-emerald-500/10 dark:bg-[#00E676]/10 border border-emerald-500/30 dark:border-[#00E676]/30 p-2.5 flex items-center gap-2 text-xs text-emerald-700 dark:text-[#00E676]">
                   <Sparkles className="w-4 h-4 shrink-0" />
                   <span>Includes +2,500 ETB Welcome Free Bet Bonus</span>
                 </div>

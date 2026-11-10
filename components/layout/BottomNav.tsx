@@ -54,7 +54,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-15 bg-[#0B0E14]/95 backdrop-blur-md border-t border-[#2A344B] grid grid-cols-5 items-center px-1">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-15 bg-white/95 dark:bg-[#0B0E14]/95 backdrop-blur-md border-t border-slate-200 dark:border-[#2A344B] grid grid-cols-5 items-center px-1 transition-colors">
       {navItems.map((item) => {
         const Icon = item.icon;
         return (
@@ -62,7 +62,9 @@ export function BottomNav() {
             key={item.href}
             href={item.href}
             className={`relative min-h-[44px] flex flex-col items-center justify-center py-1 transition-colors ${
-              item.active ? 'text-[#00E676]' : 'text-[#94A3B8] hover:text-white'
+              item.active
+                ? 'text-emerald-600 dark:text-[#00E676] font-semibold'
+                : 'text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <div className="relative">

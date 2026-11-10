@@ -177,10 +177,10 @@ export function DepositFormPanel() {
   };
 
   return (
-    <div className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 sm:p-5 space-y-4">
+    <div className="rounded-2xl bg-white dark:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] shadow-xs dark:shadow-none p-4 sm:p-5 space-y-4">
       {/* Deposit vs Withdraw Segmented Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#2A344B]">
-        <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#0B0E14] border border-[#2A344B] w-full sm:w-72">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-[#2A344B]">
+        <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-slate-100 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] w-full sm:w-72">
           <button
             type="button"
             onClick={() => {
@@ -191,7 +191,7 @@ export function DepositFormPanel() {
             className={`py-2 px-3 rounded-lg text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer ${
               mode === 'deposit'
                 ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                : 'text-[#94A3B8] hover:text-white'
+                : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowDownLeft className="w-3.5 h-3.5" />
@@ -207,7 +207,7 @@ export function DepositFormPanel() {
             className={`py-2 px-3 rounded-lg text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer ${
               mode === 'withdraw'
                 ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                : 'text-[#94A3B8] hover:text-white'
+                : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -215,8 +215,11 @@ export function DepositFormPanel() {
           </button>
         </div>
 
-        <span className="text-xs font-mono tabular-nums text-[#94A3B8]">
-          Available: <strong className="text-white">{balance.toLocaleString('en-US', { minimumFractionDigits: 2 })} ETB</strong>
+        <span className="text-xs font-mono tabular-nums text-slate-500 dark:text-[#94A3B8]">
+          Available:{' '}
+          <strong className="text-slate-900 dark:text-white">
+            {balance.toLocaleString('en-US', { minimumFractionDigits: 2 })} ETB
+          </strong>
         </span>
       </div>
 
@@ -236,7 +239,7 @@ export function DepositFormPanel() {
               className={`min-h-[42px] px-3 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left flex items-center justify-between ${
                 active
                   ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold'
-                  : 'bg-[#121721] border-[#2A344B] text-white hover:border-[#00E676]/40'
+                  : 'bg-slate-50 dark:bg-[#121721] border-slate-200 dark:border-[#2A344B] text-slate-900 dark:text-white hover:border-emerald-500/40 dark:hover:border-[#00E676]/40'
               }`}
             >
               <span className="truncate">{pm.shortLabel}</span>
@@ -247,52 +250,54 @@ export function DepositFormPanel() {
 
       {/* Merchant Details & QR (Only shown in Deposit mode) */}
       {mode === 'deposit' && (
-        <div className="rounded-xl bg-[#121721] border border-[#2A344B] p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="rounded-xl bg-slate-50 dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B] p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="space-y-2 flex-1 min-w-0 w-full">
-            <div className="flex items-center justify-between gap-2 rounded-lg bg-[#0B0E14] border border-[#2A344B] px-3 py-2">
+            <div className="flex items-center justify-between gap-2 rounded-lg bg-white dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] px-3 py-2">
               <div className="min-w-0">
-                <span className="block text-[10px] text-[#94A3B8]">Merchant</span>
-                <span className="text-xs font-semibold text-white truncate block">
+                <span className="block text-[10px] text-slate-500 dark:text-[#94A3B8]">
+                  Merchant
+                </span>
+                <span className="text-xs font-semibold text-slate-900 dark:text-white truncate block">
                   {selectedMethod.accountName}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => handleCopy(selectedMethod.accountName, 'name')}
-                className="px-2.5 py-1 rounded-md bg-[#1E2638] text-xs font-medium text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
+                className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-[#1E2638] text-xs font-medium text-slate-900 dark:text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 {copiedField === 'name' ? (
-                  <Check className="w-3.5 h-3.5 text-[#00E676]" />
+                  <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-[#00E676]" />
                 ) : (
-                  <Copy className="w-3.5 h-3.5 text-[#94A3B8]" />
+                  <Copy className="w-3.5 h-3.5 text-slate-500 dark:text-[#94A3B8]" />
                 )}
               </button>
             </div>
 
-            <div className="flex items-center justify-between gap-2 rounded-lg bg-[#0B0E14] border border-[#2A344B] px-3 py-2">
+            <div className="flex items-center justify-between gap-2 rounded-lg bg-white dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] px-3 py-2">
               <div className="min-w-0">
-                <span className="block text-[10px] text-[#94A3B8]">
+                <span className="block text-[10px] text-slate-500 dark:text-[#94A3B8]">
                   Account / Address
                 </span>
-                <span className="font-mono tabular-nums text-xs font-bold text-[#00E676] truncate block">
+                <span className="font-mono tabular-nums text-xs font-bold text-emerald-600 dark:text-[#00E676] truncate block">
                   {selectedMethod.accountNumber}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => handleCopy(selectedMethod.accountNumber, 'number')}
-                className="px-2.5 py-1 rounded-md bg-[#1E2638] text-xs font-medium text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
+                className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-[#1E2638] text-xs font-medium text-slate-900 dark:text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 {copiedField === 'number' ? (
-                  <Check className="w-3.5 h-3.5 text-[#00E676]" />
+                  <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-[#00E676]" />
                 ) : (
-                  <Copy className="w-3.5 h-3.5 text-[#94A3B8]" />
+                  <Copy className="w-3.5 h-3.5 text-slate-500 dark:text-[#94A3B8]" />
                 )}
               </button>
             </div>
           </div>
 
-          <div className="w-24 h-24 rounded-xl bg-white p-1.5 flex flex-col items-center justify-center shrink-0 self-center sm:self-auto">
+          <div className="w-24 h-24 rounded-xl bg-white border border-slate-200 dark:border-transparent p-1.5 flex flex-col items-center justify-center shrink-0 self-center sm:self-auto">
             <QrCode className="w-16 h-16 text-[#0B0E14]" strokeWidth={1.5} />
             <span className="text-[8px] font-mono font-bold text-[#0B0E14]">
               SCAN QR
@@ -311,10 +316,10 @@ export function DepositFormPanel() {
               step="any"
               value={amount || ''}
               onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-              className="w-full h-11 px-3.5 pr-16 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono tabular-nums text-sm font-bold text-white"
+              className="w-full h-11 px-3.5 pr-16 rounded-xl bg-slate-50 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono tabular-nums text-sm font-bold text-slate-900 dark:text-white"
               placeholder="Amount in ETB"
             />
-            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 font-mono text-xs font-bold text-[#00E676]">
+            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 font-mono text-xs font-bold text-emerald-600 dark:text-[#00E676]">
               ETB
             </span>
           </div>
@@ -327,8 +332,8 @@ export function DepositFormPanel() {
                 onClick={() => setAmount(preset)}
                 className={`px-3 py-1.5 rounded-lg border font-mono tabular-nums text-xs font-semibold transition-colors cursor-pointer ${
                   amount === preset
-                    ? 'bg-[#00E676]/20 border-[#00E676] text-[#00E676]'
-                    : 'bg-[#121721] border-[#2A344B] text-[#94A3B8] hover:text-white'
+                    ? 'bg-emerald-500/20 dark:bg-[#00E676]/20 border-emerald-500 dark:border-[#00E676] text-emerald-700 dark:text-[#00E676]'
+                    : 'bg-slate-50 dark:bg-[#121721] border-slate-200 dark:border-[#2A344B] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {preset.toLocaleString()}
@@ -339,7 +344,7 @@ export function DepositFormPanel() {
 
         {mode === 'withdraw' ? (
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-[#94A3B8]">
+            <label className="block text-xs font-medium text-slate-600 dark:text-[#94A3B8]">
               Destination {selectedMethod.shortLabel} Account / Phone
             </label>
             <input
@@ -347,7 +352,7 @@ export function DepositFormPanel() {
               value={destinationAccount}
               onChange={(e) => setDestinationAccount(e.target.value)}
               placeholder="+251 911 248 900 or Account Number"
-              className="w-full h-11 px-3.5 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-white"
+              className="w-full h-11 px-3.5 rounded-xl bg-slate-50 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-slate-900 dark:text-white"
             />
           </div>
         ) : (
@@ -355,13 +360,13 @@ export function DepositFormPanel() {
             {/* Screenshot Upload */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-[#94A3B8]">
+                <span className="text-xs font-medium text-slate-600 dark:text-[#94A3B8]">
                   Payment Receipt Screenshot
                 </span>
                 <button
                   type="button"
                   onClick={handleSimulateSampleReceipt}
-                  className="text-xs font-semibold text-[#00E676] hover:underline inline-flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-semibold text-emerald-600 dark:text-[#00E676] hover:underline inline-flex items-center gap-1 cursor-pointer"
                 >
                   <Camera className="w-3.5 h-3.5" />
                   <span>Use Sample Receipt</span>
@@ -378,14 +383,14 @@ export function DepositFormPanel() {
 
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="rounded-xl border border-dashed border-[#2A344B] hover:border-[#00E676]/60 bg-[#121721] p-3.5 text-center cursor-pointer transition-colors"
+                className="rounded-xl border border-dashed border-slate-300 dark:border-[#2A344B] hover:border-emerald-500/60 dark:hover:border-[#00E676]/60 bg-slate-50 dark:bg-[#121721] p-3.5 text-center cursor-pointer transition-colors"
               >
                 {isUploading ? (
                   <div className="py-2 space-y-1.5">
-                    <p className="text-xs font-semibold text-white">
+                    <p className="text-xs font-semibold text-slate-900 dark:text-white">
                       Uploading... {uploadProgress}%
                     </p>
-                    <div className="w-48 mx-auto h-1.5 rounded-full bg-[#0B0E14] overflow-hidden">
+                    <div className="w-48 mx-auto h-1.5 rounded-full bg-slate-200 dark:bg-[#0B0E14] overflow-hidden">
                       <div
                         className="h-full bg-[#00E676]"
                         style={{ width: `${uploadProgress}%` }}
@@ -399,20 +404,22 @@ export function DepositFormPanel() {
                       src={previewUrl}
                       alt="Receipt preview"
                       referrerPolicy="no-referrer"
-                      className="w-12 h-12 rounded-lg object-cover border border-[#00E676]/50 shrink-0"
+                      className="w-12 h-12 rounded-lg object-cover border border-emerald-500/50 dark:border-[#00E676]/50 shrink-0"
                     />
                     <div className="min-w-0">
-                      <div className="inline-flex items-center gap-1 text-xs font-bold text-[#00E676]">
+                      <div className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-[#00E676]">
                         <FileCheck2 className="w-3.5 h-3.5 shrink-0" />
                         <span>Receipt Attached</span>
                       </div>
-                      <p className="text-xs text-white truncate">{fileName}</p>
+                      <p className="text-xs text-slate-900 dark:text-white truncate">
+                        {fileName}
+                      </p>
                     </div>
                   </div>
                 ) : (
                   <div className="py-2 space-y-1">
-                    <UploadCloud className="w-6 h-6 text-[#00E676] mx-auto" />
-                    <p className="text-xs font-semibold text-white">
+                    <UploadCloud className="w-6 h-6 text-emerald-600 dark:text-[#00E676] mx-auto" />
+                    <p className="text-xs font-semibold text-slate-900 dark:text-white">
                       Upload Receipt Screenshot
                     </p>
                   </div>
@@ -425,20 +432,20 @@ export function DepositFormPanel() {
               value={referenceCode}
               onChange={(e) => setReferenceCode(e.target.value)}
               placeholder="Transaction Reference Code (Optional)"
-              className="w-full h-10 px-3.5 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-white"
+              className="w-full h-10 px-3.5 rounded-xl bg-slate-50 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-slate-900 dark:text-white"
             />
           </>
         )}
 
         {fileError && (
-          <div className="rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 p-2.5 flex items-center gap-2 text-xs text-[#EF4444]">
+          <div className="rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 p-2.5 flex items-center gap-2 text-xs text-red-600 dark:text-[#EF4444]">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{fileError}</span>
           </div>
         )}
 
         {successNotice && (
-          <div className="rounded-xl bg-[#00E676]/15 border border-[#00E676]/40 p-2.5 flex items-center gap-2 text-xs text-[#00E676]">
+          <div className="rounded-xl bg-emerald-500/15 dark:bg-[#00E676]/15 border border-emerald-500/40 dark:border-[#00E676]/40 p-2.5 flex items-center gap-2 text-xs text-emerald-700 dark:text-[#00E676]">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{successNotice}</span>
           </div>

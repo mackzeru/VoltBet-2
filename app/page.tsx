@@ -85,7 +85,7 @@ export default function SportsbookLobbyPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 space-y-4">
+    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 space-y-4">
       {/* Top Navigation League Scroller with Real League Logos */}
       <section
         aria-label="League Filter Scroller"
@@ -96,8 +96,8 @@ export default function SportsbookLobbyPage() {
           onClick={() => setSelectedLeagueId(null)}
           className={`min-h-[40px] px-3.5 py-1.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-2 whitespace-nowrap shrink-0 transition-all cursor-pointer ${
             selectedLeagueId === null
-              ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold'
-              : 'bg-[#121721] border-[#2A344B] text-[#94A3B8] hover:text-white'
+              ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold shadow-sm'
+              : 'bg-white dark:bg-[#121721] border-slate-200 dark:border-[#2A344B] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           <Trophy className="w-3.5 h-3.5" />
@@ -113,8 +113,8 @@ export default function SportsbookLobbyPage() {
               onClick={() => setSelectedLeagueId(isActive ? null : league.id)}
               className={`min-h-[40px] px-3 py-1.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-2 whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold'
-                  : 'bg-[#121721] hover:bg-[#1A2232] border-[#2A344B] text-white'
+                  ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold shadow-sm'
+                  : 'bg-white dark:bg-[#121721] hover:bg-slate-50 dark:hover:bg-[#1A2232] border-slate-200 dark:border-[#2A344B] text-slate-800 dark:text-white'
               }`}
             >
               <TeamCrest
@@ -130,22 +130,24 @@ export default function SportsbookLobbyPage() {
         })}
       </section>
 
-      <div className="flex flex-col lg:flex-row items-start gap-6">
+      <div className="flex flex-col lg:flex-row items-start gap-5 lg:gap-6">
         <div className="w-full flex-1 min-w-0 space-y-4">
           {/* Hero Promotional Banner with Real Team Logos */}
-          <section className="relative rounded-2xl bg-gradient-to-r from-[#1A2232] via-[#1E2638] to-[#121721] border border-[#2A344B] p-4 sm:p-5 overflow-hidden">
+          <section className="relative rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-slate-100 dark:from-[#1A2232] dark:via-[#1E2638] dark:to-[#121721] border border-slate-200 dark:border-[#2A344B] p-4 sm:p-5 overflow-hidden shadow-xs">
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1.5 max-w-xl">
-                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#00E676]">
+                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-600 dark:text-[#00E676]">
                   <Zap className="w-3.5 h-3.5" />
                   <span>{activePromo.tag}</span>
                 </div>
 
-                <h1 className="font-display text-lg sm:text-2xl font-extrabold text-white tracking-tight">
+                <h1 className="font-display text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   {activePromo.title}
                 </h1>
 
-                <p className="text-xs text-[#94A3B8]">{activePromo.subtitle}</p>
+                <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
+                  {activePromo.subtitle}
+                </p>
 
                 <div className="pt-2 flex flex-wrap items-center gap-2">
                   <button
@@ -168,7 +170,7 @@ export default function SportsbookLobbyPage() {
                         activePromo.marketId,
                         activePromo.selectionName
                       )
-                        ? 'bg-white text-[#0B0E14]'
+                        ? 'bg-slate-900 text-white dark:bg-white dark:text-[#0B0E14]'
                         : 'bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14]'
                     }`}
                   >
@@ -183,7 +185,7 @@ export default function SportsbookLobbyPage() {
 
                   <Link
                     href={`/matches/${activePromo.fixtureId}`}
-                    className="min-h-[40px] px-3 py-1.5 rounded-xl bg-[#121721] hover:bg-[#1A2232] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1"
+                    className="min-h-[40px] px-3 py-1.5 rounded-xl bg-white dark:bg-[#121721] hover:bg-slate-100 dark:hover:bg-[#1A2232] border border-slate-200 dark:border-[#2A344B] text-xs font-semibold text-slate-900 dark:text-white inline-flex items-center gap-1"
                   >
                     <span>Markets</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -193,13 +195,13 @@ export default function SportsbookLobbyPage() {
 
               {/* Right Matchup Crests & Carousel Arrows */}
               <div className="flex sm:flex-col items-center sm:items-end justify-between gap-3 shrink-0">
-                <div className="flex items-center gap-2 bg-[#0B0E14]/70 border border-[#2A344B] rounded-2xl px-3 py-2">
+                <div className="flex items-center gap-2 bg-white/90 dark:bg-[#0B0E14]/70 border border-slate-200 dark:border-[#2A344B] rounded-2xl px-3 py-2">
                   <TeamCrest
                     name={activePromo.homeName}
                     logo={activePromo.homeLogo}
                     size="md"
                   />
-                  <span className="font-mono text-xs font-bold text-[#94A3B8]">
+                  <span className="font-mono text-xs font-bold text-slate-500 dark:text-[#94A3B8]">
                     VS
                   </span>
                   <TeamCrest
@@ -213,18 +215,18 @@ export default function SportsbookLobbyPage() {
                   <button
                     type="button"
                     onClick={() => handleCycleBanner('prev')}
-                    className="w-7 h-7 rounded-lg bg-[#121721] hover:bg-[#2A344B] border border-[#2A344B] flex items-center justify-center text-white cursor-pointer"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-[#121721] hover:bg-slate-100 dark:hover:bg-[#2A344B] border border-slate-200 dark:border-[#2A344B] flex items-center justify-center text-slate-700 dark:text-white cursor-pointer"
                     aria-label="Previous promo"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
-                  <span className="font-mono tabular-nums text-[11px] text-[#94A3B8] px-1">
+                  <span className="font-mono tabular-nums text-[11px] text-slate-500 dark:text-[#94A3B8] px-1">
                     {bannerIndex + 1}/{PROMO_BANNERS.length}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleCycleBanner('next')}
-                    className="w-7 h-7 rounded-lg bg-[#121721] hover:bg-[#2A344B] border border-[#2A344B] flex items-center justify-center text-white cursor-pointer"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-[#121721] hover:bg-slate-100 dark:hover:bg-[#2A344B] border border-slate-200 dark:border-[#2A344B] flex items-center justify-center text-slate-700 dark:text-white cursor-pointer"
                     aria-label="Next promo"
                   >
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -236,19 +238,19 @@ export default function SportsbookLobbyPage() {
 
           {/* Tab Filter Bar & Search Row */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-xl bg-[#121721] border border-[#2A344B]">
+            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-xl bg-slate-100 dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B]">
               <button
                 type="button"
                 onClick={() => setActiveTab('live')}
                 className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'live'
-                    ? 'bg-[#1E2638] text-white border border-[#2A344B]'
-                    : 'text-[#94A3B8] hover:text-white'
+                    ? 'bg-white dark:bg-[#1E2638] text-slate-900 dark:text-white border border-slate-200 dark:border-[#2A344B] shadow-2xs'
+                    : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <span className="w-2 h-2 rounded-full bg-[#EF4444] animate-pulse" />
                 <span>Live</span>
-                <span className="font-mono tabular-nums text-[#00E676]">
+                <span className="font-mono tabular-nums text-emerald-600 dark:text-[#00E676]">
                   ({liveCount})
                 </span>
               </button>
@@ -258,8 +260,8 @@ export default function SportsbookLobbyPage() {
                 onClick={() => setActiveTab('today')}
                 className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'today'
-                    ? 'bg-[#1E2638] text-white border border-[#2A344B]'
-                    : 'text-[#94A3B8] hover:text-white'
+                    ? 'bg-white dark:bg-[#1E2638] text-slate-900 dark:text-white border border-slate-200 dark:border-[#2A344B] shadow-2xs'
+                    : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Clock className="w-3.5 h-3.5" />
@@ -271,8 +273,8 @@ export default function SportsbookLobbyPage() {
                 onClick={() => setActiveTab('tomorrow')}
                 className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'tomorrow'
-                    ? 'bg-[#1E2638] text-white border border-[#2A344B]'
-                    : 'text-[#94A3B8] hover:text-white'
+                    ? 'bg-white dark:bg-[#1E2638] text-slate-900 dark:text-white border border-slate-200 dark:border-[#2A344B] shadow-2xs'
+                    : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Calendar className="w-3.5 h-3.5" />
@@ -284,8 +286,8 @@ export default function SportsbookLobbyPage() {
                 onClick={() => setActiveTab('outrights')}
                 className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'outrights'
-                    ? 'bg-[#1E2638] text-white border border-[#2A344B]'
-                    : 'text-[#94A3B8] hover:text-white'
+                    ? 'bg-white dark:bg-[#1E2638] text-slate-900 dark:text-white border border-slate-200 dark:border-[#2A344B] shadow-2xs'
+                    : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Award className="w-3.5 h-3.5" />
@@ -293,14 +295,14 @@ export default function SportsbookLobbyPage() {
               </button>
             </div>
 
-            <div className="relative w-full sm:w-56 shrink-0">
-              <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="relative w-full sm:w-56 md:w-64 shrink-0">
+              <Search className="w-4 h-4 text-slate-400 dark:text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search team or league..."
-                className="w-full h-9 pl-9 pr-3 rounded-xl bg-[#121721] border border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-white placeholder-[#94A3B8]"
+                className="w-full h-9 pl-9 pr-3 rounded-xl bg-white dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#94A3B8]"
               />
             </div>
           </div>
@@ -315,7 +317,7 @@ export default function SportsbookLobbyPage() {
                 .map((outright) => (
                   <div
                     key={outright.id}
-                    className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 space-y-3"
+                    className="rounded-2xl bg-white dark:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] p-4 space-y-3 shadow-xs"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
@@ -324,11 +326,11 @@ export default function SportsbookLobbyPage() {
                           logo={outright.leagueLogo}
                           size="xs"
                         />
-                        <h3 className="font-display text-sm font-bold text-white">
+                        <h3 className="font-display text-sm font-bold text-slate-900 dark:text-white">
                           {outright.title}
                         </h3>
                       </div>
-                      <span className="text-xs font-mono text-[#94A3B8]">
+                      <span className="text-xs font-mono text-slate-500 dark:text-[#94A3B8]">
                         {outright.season}
                       </span>
                     </div>
@@ -369,8 +371,10 @@ export default function SportsbookLobbyPage() {
                 ))}
             </div>
           ) : filteredFixtures.length === 0 ? (
-            <div className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-8 text-center space-y-2.5">
-              <p className="text-sm font-semibold text-white">No matches found</p>
+            <div className="rounded-2xl bg-white dark:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] p-8 text-center space-y-2.5 shadow-xs">
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                No matches found
+              </p>
               <button
                 type="button"
                 onClick={() => {
@@ -384,7 +388,8 @@ export default function SportsbookLobbyPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            /* Responsive grid: 1 col on mobile (<640px), 2 cols on tablet (640px+) & desktop */
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {filteredFixtures.map((fixture) => (
                 <MatchCard key={fixture.fixture.id} fixture={fixture} />
               ))}

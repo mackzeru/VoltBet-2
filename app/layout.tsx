@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/context/ThemeContext';
 import { WalletProvider } from '@/context/WalletContext';
 import { SportsDataProvider } from '@/context/SportsDataContext';
 import { BetSlipProvider } from '@/context/BetSlipContext';
@@ -52,22 +53,25 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`dark ${outfit.variable} ${jakarta.variable} ${jetbrainsMono.variable}`}
     >
       <body
         suppressHydrationWarning
-        className="min-h-screen bg-[#0B0E14] text-white antialiased pb-24 md:pb-12"
+        className="min-h-screen bg-slate-50 dark:bg-[#0B0E14] text-slate-900 dark:text-white antialiased pb-24 md:pb-12 transition-colors duration-150"
       >
-        <WalletProvider>
-          <SportsDataProvider>
-            <BetSlipProvider>
-              <Header />
-              {children}
-              <BottomNav />
-              <AuthModal />
-            </BetSlipProvider>
-          </SportsDataProvider>
-        </WalletProvider>
+        <ThemeProvider>
+          <WalletProvider>
+            <SportsDataProvider>
+              <BetSlipProvider>
+                <Header />
+                {children}
+                <BottomNav />
+                <AuthModal />
+              </BetSlipProvider>
+            </SportsDataProvider>
+          </WalletProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

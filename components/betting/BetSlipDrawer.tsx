@@ -94,11 +94,11 @@ export function BetSlipDrawer() {
 
   const renderSlipContent = () => (
     <div className="flex flex-col h-full">
-      <div className="p-3.5 border-b border-[#2A344B] space-y-2.5">
+      <div className="p-3.5 border-b border-slate-200 dark:border-[#2A344B] space-y-2.5">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-[#00E676]" />
-            <h2 className="font-display text-sm font-bold text-white">
+            <Receipt className="w-4 h-4 text-emerald-600 dark:text-[#00E676]" />
+            <h2 className="font-display text-sm font-bold text-slate-900 dark:text-white">
               Bet Slip ({selections.length})
             </h2>
           </div>
@@ -108,7 +108,7 @@ export function BetSlipDrawer() {
               <button
                 type="button"
                 onClick={clearSlip}
-                className="inline-flex items-center gap-1 text-xs text-[#94A3B8] hover:text-[#EF4444] transition-colors cursor-pointer px-2 py-1"
+                className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-[#94A3B8] hover:text-red-600 dark:hover:text-[#EF4444] transition-colors cursor-pointer px-2 py-1"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Clear</span>
@@ -117,7 +117,7 @@ export function BetSlipDrawer() {
             <button
               type="button"
               onClick={() => setIsDrawerOpen(false)}
-              className="lg:hidden p-1 rounded-lg text-[#94A3B8] hover:text-white"
+              className="lg:hidden p-1 rounded-lg text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white"
               aria-label="Close Bet Slip"
             >
               <X className="w-4 h-4" />
@@ -125,14 +125,14 @@ export function BetSlipDrawer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#0B0E14] border border-[#2A344B]">
+        <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-slate-100 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B]">
           <button
             type="button"
             onClick={() => setMode('single')}
             className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
               mode === 'single'
                 ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                : 'text-[#94A3B8] hover:text-white'
+                : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Single ({selections.length})
@@ -143,7 +143,7 @@ export function BetSlipDrawer() {
             className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
               mode === 'multi'
                 ? 'bg-[#00E676] text-[#0B0E14] font-bold'
-                : 'text-[#94A3B8] hover:text-white'
+                : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Parlay
@@ -155,9 +155,11 @@ export function BetSlipDrawer() {
       <div className="flex-1 overflow-y-auto p-3.5 space-y-2 max-h-[45vh] lg:max-h-[400px]">
         {selections.length === 0 ? (
           <div className="py-10 px-3 text-center space-y-1.5">
-            <Receipt className="w-7 h-7 text-[#94A3B8]/40 mx-auto" />
-            <p className="text-xs font-semibold text-white">No Selections Yet</p>
-            <p className="text-[11px] text-[#94A3B8]">
+            <Receipt className="w-7 h-7 text-slate-400 dark:text-[#94A3B8]/40 mx-auto" />
+            <p className="text-xs font-semibold text-slate-900 dark:text-white">
+              No Selections Yet
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-[#94A3B8]">
               Tap any odds button to build your slip.
             </p>
           </div>
@@ -165,16 +167,18 @@ export function BetSlipDrawer() {
           selections.map((sel) => (
             <div
               key={sel.selectionId}
-              className="rounded-xl bg-[#121721] border border-[#2A344B] p-2.5 space-y-1.5"
+              className="rounded-xl bg-slate-50 dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B] p-2.5 space-y-1.5"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-[11px] text-[#94A3B8] truncate">
+                  <p className="text-[11px] text-slate-500 dark:text-[#94A3B8] truncate">
                     {sel.matchTitle}
                   </p>
-                  <p className="text-xs font-semibold text-white truncate">
+                  <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
                     {sel.marketName}:{' '}
-                    <span className="text-[#00E676]">{sel.selectionName}</span>
+                    <span className="text-emerald-600 dark:text-[#00E676]">
+                      {sel.selectionName}
+                    </span>
                   </p>
                 </div>
 
@@ -182,12 +186,12 @@ export function BetSlipDrawer() {
                   <span
                     className={`inline-flex items-center gap-1 font-mono tabular-nums text-xs font-bold px-2 py-0.5 rounded-lg border ${
                       sel.suspended
-                        ? 'bg-amber-500/10 border-amber-500/40 text-amber-400'
+                        ? 'bg-amber-500/10 border-amber-500/40 text-amber-600 dark:text-amber-400'
                         : sel.driftDirection === 'up'
-                        ? 'bg-[#22C55E]/15 border-[#22C55E]/50 text-[#22C55E]'
+                        ? 'bg-[#22C55E]/15 border-[#22C55E]/50 text-emerald-600 dark:text-[#22C55E]'
                         : sel.driftDirection === 'down'
-                        ? 'bg-[#EF4444]/15 border-[#EF4444]/50 text-[#EF4444]'
-                        : 'bg-[#1E2638] border-[#2A344B] text-[#00E676]'
+                        ? 'bg-[#EF4444]/15 border-[#EF4444]/50 text-red-600 dark:text-[#EF4444]'
+                        : 'bg-white dark:bg-[#1E2638] border-slate-200 dark:border-[#2A344B] text-emerald-700 dark:text-[#00E676]'
                     }`}
                   >
                     {sel.suspended ? (
@@ -207,7 +211,7 @@ export function BetSlipDrawer() {
                   <button
                     type="button"
                     onClick={() => removeSelection(sel.selectionId)}
-                    className="p-1 rounded-lg text-[#94A3B8] hover:text-[#EF4444] cursor-pointer"
+                    className="p-1 rounded-lg text-slate-400 dark:text-[#94A3B8] hover:text-red-600 dark:hover:text-[#EF4444] cursor-pointer"
                     aria-label="Remove"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -216,14 +220,16 @@ export function BetSlipDrawer() {
               </div>
 
               {sel.driftDirection && (
-                <p className="text-[10px] font-mono tabular-nums text-amber-400">
+                <p className="text-[10px] font-mono tabular-nums text-amber-600 dark:text-amber-400">
                   {sel.lockedOdd.toFixed(2)} → {sel.odd.toFixed(2)}
                 </p>
               )}
 
               {mode === 'single' && (
-                <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-[#2A344B]/60">
-                  <span className="text-[11px] text-[#94A3B8]">Stake (ETB)</span>
+                <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-200 dark:border-[#2A344B]/60">
+                  <span className="text-[11px] text-slate-500 dark:text-[#94A3B8]">
+                    Stake (ETB)
+                  </span>
                   <input
                     type="number"
                     min={0}
@@ -231,7 +237,7 @@ export function BetSlipDrawer() {
                     onChange={(e) =>
                       updateSingleStake(sel.selectionId, parseFloat(e.target.value) || 0)
                     }
-                    className="w-24 h-7 px-2 rounded-lg bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none text-right font-mono tabular-nums text-xs text-white"
+                    className="w-24 h-7 px-2 rounded-lg bg-white dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none text-right font-mono tabular-nums text-xs text-slate-900 dark:text-white"
                   />
                 </div>
               )}
@@ -243,8 +249,10 @@ export function BetSlipDrawer() {
       {selections.length > 0 && hasDriftedSelections && (
         <div className="mx-3.5 mb-2 rounded-xl bg-amber-500/10 border border-amber-500/40 p-2.5 flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0">
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span className="text-xs text-amber-200 truncate">Odds shifted</span>
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="text-xs text-amber-800 dark:text-amber-200 truncate">
+              Odds shifted
+            </span>
           </div>
           <button
             type="button"
@@ -257,13 +265,13 @@ export function BetSlipDrawer() {
       )}
 
       {selections.length > 0 && (
-        <div className="p-3.5 border-t border-[#2A344B] bg-[#121721] space-y-2.5">
+        <div className="p-3.5 border-t border-slate-200 dark:border-[#2A344B] bg-slate-50 dark:bg-[#121721] space-y-2.5">
           {mode === 'multi' && (
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#94A3B8]">Stake (ETB)</span>
+                <span className="text-slate-500 dark:text-[#94A3B8]">Stake (ETB)</span>
                 {isAuthenticated && (
-                  <span className="font-mono tabular-nums text-[11px] text-[#94A3B8]">
+                  <span className="font-mono tabular-nums text-[11px] text-slate-500 dark:text-[#94A3B8]">
                     Bal: {balance.toLocaleString('en-US', { minimumFractionDigits: 0 })} ETB
                   </span>
                 )}
@@ -278,9 +286,9 @@ export function BetSlipDrawer() {
                     setMultiStake(Math.max(0, parseFloat(e.target.value) || 0));
                   }}
                   placeholder="Stake"
-                  className="w-full h-10 px-3 pr-12 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono tabular-nums text-sm font-bold text-white"
+                  className="w-full h-10 px-3 pr-12 rounded-xl bg-white dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono tabular-nums text-sm font-bold text-slate-900 dark:text-white"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs font-semibold text-[#94A3B8]">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs font-semibold text-slate-500 dark:text-[#94A3B8]">
                   ETB
                 </span>
               </div>
@@ -293,7 +301,7 @@ export function BetSlipDrawer() {
                 key={amt}
                 type="button"
                 onClick={() => handlePresetAdd(amt)}
-                className="min-h-[34px] rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] font-mono tabular-nums text-xs font-semibold text-white transition-colors cursor-pointer"
+                className="min-h-[34px] rounded-lg bg-white dark:bg-[#1E2638] hover:bg-slate-200/70 dark:hover:bg-[#2A344B] border border-slate-200 dark:border-[#2A344B] font-mono tabular-nums text-xs font-semibold text-slate-900 dark:text-white transition-colors cursor-pointer"
               >
                 +{amt}
               </button>
@@ -301,7 +309,7 @@ export function BetSlipDrawer() {
             <button
               type="button"
               onClick={handleSetMaxStake}
-              className="min-h-[34px] rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] text-xs font-bold text-[#00E676] transition-colors cursor-pointer"
+              className="min-h-[34px] rounded-lg bg-white dark:bg-[#1E2638] hover:bg-slate-200/70 dark:hover:bg-[#2A344B] border border-slate-200 dark:border-[#2A344B] text-xs font-bold text-emerald-600 dark:text-[#00E676] transition-colors cursor-pointer"
             >
               Max
             </button>
@@ -309,16 +317,16 @@ export function BetSlipDrawer() {
 
           <div className="space-y-1 pt-0.5 text-xs">
             {mode === 'multi' && (
-              <div className="flex items-center justify-between text-[#94A3B8]">
+              <div className="flex items-center justify-between text-slate-500 dark:text-[#94A3B8]">
                 <span>Total Odds</span>
-                <span className="font-mono tabular-nums font-bold text-white">
+                <span className="font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                   {combinedMultiOdds.toFixed(2)}x
                 </span>
               </div>
             )}
-            <div className="flex items-center justify-between text-sm font-bold pt-1 border-t border-[#2A344B]/60">
-              <span className="text-white">Est. Return</span>
-              <span className="font-mono tabular-nums text-[#00E676]">
+            <div className="flex items-center justify-between text-sm font-bold pt-1 border-t border-slate-200 dark:border-[#2A344B]/60">
+              <span className="text-slate-900 dark:text-white">Est. Return</span>
+              <span className="font-mono tabular-nums text-emerald-600 dark:text-[#00E676]">
                 {estimatedPayout.toLocaleString('en-US', { minimumFractionDigits: 2 })} ETB
               </span>
             </div>
@@ -326,7 +334,9 @@ export function BetSlipDrawer() {
 
           {insufficientBalance && (
             <div className="rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 p-2 flex items-center justify-between gap-2">
-              <span className="text-xs text-[#EF4444]">Insufficient balance</span>
+              <span className="text-xs text-red-600 dark:text-[#EF4444]">
+                Insufficient balance
+              </span>
               <Link
                 href="/wallet"
                 onClick={() => setIsDrawerOpen(false)}
@@ -339,7 +349,9 @@ export function BetSlipDrawer() {
           )}
 
           {errorMessage && !insufficientBalance && (
-            <p className="text-xs text-[#EF4444] font-medium">{errorMessage}</p>
+            <p className="text-xs text-red-600 dark:text-[#EF4444] font-medium">
+              {errorMessage}
+            </p>
           )}
 
           {!isAuthenticated ? (
@@ -377,14 +389,16 @@ export function BetSlipDrawer() {
 
   return (
     <>
+      {/* Desktop Sticky Sidebar (lg: 1024px+) */}
       <aside className="hidden lg:block w-80 xl:w-96 shrink-0">
-        <div className="sticky top-20 rounded-2xl bg-[#1E2638] border border-[#2A344B] overflow-hidden">
+        <div className="sticky top-20 rounded-2xl bg-white dark:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] shadow-xs dark:shadow-none overflow-hidden">
           {renderSlipContent()}
         </div>
       </aside>
 
+      {/* Mobile & Tablet Floating Slip Bar */}
       {selections.length > 0 && !isDrawerOpen && (
-        <div className="lg:hidden fixed bottom-16 left-3 right-3 z-30">
+        <div className="lg:hidden fixed bottom-16 md:bottom-4 left-3 right-3 md:left-auto md:right-6 md:w-96 z-30">
           <button
             type="button"
             onClick={() => setIsDrawerOpen(true)}
@@ -407,31 +421,33 @@ export function BetSlipDrawer() {
         </div>
       )}
 
+      {/* Mobile & Tablet Slide-Up Sheet / Centered Tablet Drawer */}
       {isDrawerOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end bg-black/70 backdrop-blur-sm">
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center md:p-6 bg-black/60 backdrop-blur-sm">
           <div
-            className="flex-1"
+            className="flex-1 w-full md:hidden"
             onClick={() => setIsDrawerOpen(false)}
             aria-hidden="true"
           />
-          <div className="rounded-t-3xl bg-[#1E2638] border-t border-[#2A344B] max-h-[85vh] flex flex-col overflow-hidden">
-            <div className="w-10 h-1.5 bg-[#2A344B] rounded-full mx-auto mt-2.5" />
+          <div className="w-full md:max-w-md rounded-t-3xl md:rounded-2xl bg-white dark:bg-[#1E2638] border-t md:border border-slate-200 dark:border-[#2A344B] max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="w-10 h-1.5 bg-slate-300 dark:bg-[#2A344B] rounded-full mx-auto mt-2.5 md:hidden" />
             {renderSlipContent()}
           </div>
         </div>
       )}
 
+      {/* Bet Confirmation Receipt Modal */}
       {lastPlacedReceipt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl bg-[#1E2638] border border-[#00E676]/50 p-5 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E2638] border border-emerald-500/50 dark:border-[#00E676]/50 p-5 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-6 h-6 text-[#00E676]" />
+                <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-[#00E676]" />
                 <div>
-                  <h3 className="font-display text-base font-bold text-white">
+                  <h3 className="font-display text-base font-bold text-slate-900 dark:text-white">
                     Bet Confirmed
                   </h3>
-                  <p className="font-mono tabular-nums text-xs text-[#94A3B8]">
+                  <p className="font-mono tabular-nums text-xs text-slate-500 dark:text-[#94A3B8]">
                     {lastPlacedReceipt.id}
                   </p>
                 </div>
@@ -439,44 +455,49 @@ export function BetSlipDrawer() {
               <button
                 type="button"
                 onClick={clearLastReceipt}
-                className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white"
+                className="p-1.5 rounded-lg text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="rounded-xl bg-[#121721] border border-[#2A344B] p-3 space-y-2 max-h-48 overflow-y-auto">
+            <div className="rounded-xl bg-slate-50 dark:bg-[#121721] border border-slate-200 dark:border-[#2A344B] p-3 space-y-2 max-h-48 overflow-y-auto">
               {lastPlacedReceipt.legs.map((leg) => (
                 <div
                   key={leg.selectionId}
-                  className="flex items-center justify-between gap-2 text-xs pb-2 last:pb-0 border-b last:border-b-0 border-[#2A344B]/60"
+                  className="flex items-center justify-between gap-2 text-xs pb-2 last:pb-0 border-b last:border-b-0 border-slate-200 dark:border-[#2A344B]/60"
                 >
                   <div className="min-w-0">
-                    <p className="text-[#94A3B8] truncate">{leg.matchTitle}</p>
-                    <p className="font-semibold text-white truncate">
-                      {leg.marketName}: <span className="text-[#00E676]">{leg.selectionName}</span>
+                    <p className="text-slate-500 dark:text-[#94A3B8] truncate">
+                      {leg.matchTitle}
+                    </p>
+                    <p className="font-semibold text-slate-900 dark:text-white truncate">
+                      {leg.marketName}:{' '}
+                      <span className="text-emerald-600 dark:text-[#00E676]">
+                        {leg.selectionName}
+                      </span>
                     </p>
                   </div>
-                  <span className="font-mono tabular-nums font-bold text-[#00E676] shrink-0">
+                  <span className="font-mono tabular-nums font-bold text-emerald-600 dark:text-[#00E676] shrink-0">
                     @{leg.odd.toFixed(2)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="rounded-xl bg-[#0B0E14] border border-[#2A344B] p-3 space-y-1 text-xs">
-              <div className="flex justify-between text-[#94A3B8]">
+            <div className="rounded-xl bg-slate-100 dark:bg-[#0B0E14] border border-slate-200 dark:border-[#2A344B] p-3 space-y-1 text-xs">
+              <div className="flex justify-between text-slate-500 dark:text-[#94A3B8]">
                 <span>Stake</span>
-                <span className="font-mono tabular-nums text-white font-semibold">
+                <span className="font-mono tabular-nums text-slate-900 dark:text-white font-semibold">
                   {lastPlacedReceipt.totalStake.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                   })}{' '}
                   ETB
                 </span>
               </div>
-              <div className="flex justify-between text-sm font-bold pt-1 border-t border-[#2A344B]">
-                <span className="text-white">Potential Payout</span>
-                <span className="font-mono tabular-nums text-[#00E676]">
+              <div className="flex justify-between text-sm font-bold pt-1 border-t border-slate-200 dark:border-[#2A344B]">
+                <span className="text-slate-900 dark:text-white">Potential Payout</span>
+                <span className="font-mono tabular-nums text-emerald-600 dark:text-[#00E676]">
                   {lastPlacedReceipt.potentialPayout.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                   })}{' '}
@@ -489,7 +510,7 @@ export function BetSlipDrawer() {
               <button
                 type="button"
                 onClick={clearLastReceipt}
-                className="min-h-[42px] rounded-xl bg-[#121721] hover:bg-[#1A2232] border border-[#2A344B] text-xs font-semibold text-white cursor-pointer"
+                className="min-h-[42px] rounded-xl bg-slate-100 dark:bg-[#121721] hover:bg-slate-200 dark:hover:bg-[#1A2232] border border-slate-200 dark:border-[#2A344B] text-xs font-semibold text-slate-900 dark:text-white cursor-pointer"
               >
                 Done
               </button>

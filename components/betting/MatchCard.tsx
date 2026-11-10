@@ -62,9 +62,9 @@ export function MatchCard({
   };
 
   return (
-    <article className="rounded-2xl bg-[#1E2638] border border-[#2A344B] hover:border-[#2A344B]/90 p-3.5 transition-colors flex flex-col justify-between gap-3">
+    <article className="rounded-2xl bg-white dark:bg-[#1E2638] border border-slate-200 dark:border-[#2A344B] hover:border-slate-300 dark:hover:border-[#2A344B]/90 shadow-xs dark:shadow-none p-3.5 transition-colors flex flex-col justify-between gap-3">
       {/* Top Row: League Logo + League Name & Live/Kickoff Time */}
-      <div className="flex items-center justify-between gap-2 text-xs text-[#94A3B8]">
+      <div className="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-[#94A3B8]">
         <div className="flex items-center gap-2 min-w-0 truncate">
           {fixture.league.logo && (
             <TeamCrest
@@ -73,15 +73,15 @@ export function MatchCard({
               size="xs"
             />
           )}
-          <span className="font-medium text-white truncate">
+          <span className="font-medium text-slate-900 dark:text-white truncate">
             {fixture.league.name}
           </span>
         </div>
 
         <div className="flex items-center gap-2 shrink-0 font-mono tabular-nums">
           {isLive ? (
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#EF4444]">
-              <span className="w-2 h-2 rounded-full bg-[#EF4444] animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 dark:text-[#EF4444]">
+              <span className="w-2 h-2 rounded-full bg-red-600 dark:bg-[#EF4444] animate-pulse" />
               <span>
                 {fixture.fixture.status.short}{' '}
                 {fixture.fixture.status.elapsed
@@ -92,7 +92,9 @@ export function MatchCard({
               </span>
             </span>
           ) : (
-            <span className="text-[#94A3B8] font-medium">{kickoffTime}</span>
+            <span className="text-slate-500 dark:text-[#94A3B8] font-medium">
+              {kickoffTime}
+            </span>
           )}
         </div>
       </div>
@@ -112,12 +114,12 @@ export function MatchCard({
               secondaryColor={fixture.teams.home.secondaryColor}
               size="sm"
             />
-            <span className="text-sm font-semibold text-white group-hover:text-[#00E676] transition-colors truncate">
+            <span className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-[#00E676] transition-colors truncate">
               {fixture.teams.home.name}
             </span>
           </div>
           {isLive && (
-            <span className="font-mono tabular-nums text-base font-bold text-white shrink-0">
+            <span className="font-mono tabular-nums text-base font-bold text-slate-900 dark:text-white shrink-0">
               {fixture.goals.home ?? 0}
             </span>
           )}
@@ -133,12 +135,12 @@ export function MatchCard({
               secondaryColor={fixture.teams.away.secondaryColor}
               size="sm"
             />
-            <span className="text-sm font-semibold text-white group-hover:text-[#00E676] transition-colors truncate">
+            <span className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-[#00E676] transition-colors truncate">
               {fixture.teams.away.name}
             </span>
           </div>
           {isLive && (
-            <span className="font-mono tabular-nums text-base font-bold text-white shrink-0">
+            <span className="font-mono tabular-nums text-base font-bold text-slate-900 dark:text-white shrink-0">
               {fixture.goals.away ?? 0}
             </span>
           )}
@@ -147,14 +149,16 @@ export function MatchCard({
 
       {/* Live Micro-Stats Strip */}
       {(showMicroStats || isLive) && fixture.liveMeta && (
-        <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#2A344B]/60 text-[11px] text-[#94A3B8] font-mono tabular-nums">
+        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200 dark:border-[#2A344B]/60 text-[11px] text-slate-500 dark:text-[#94A3B8] font-mono tabular-nums">
           <span>
             Attacks {fixture.liveMeta.dangerousAttacksHome}-{fixture.liveMeta.dangerousAttacksAway} · Corners {fixture.liveMeta.recentCorners}
           </span>
 
           <span
             className={`inline-flex items-center gap-1 font-sans text-[11px] font-medium truncate ${
-              isLocked ? 'text-amber-400' : 'text-[#00E676]'
+              isLocked
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-emerald-600 dark:text-[#00E676]'
             }`}
           >
             {isLocked ? (
@@ -209,9 +213,9 @@ export function MatchCard({
       )}
 
       {/* Footer Row: Boost or Venue + Deep Market Expander */}
-      <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#2A344B]/60">
+      <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200 dark:border-[#2A344B]/60">
         {fixture.featuredBoost ? (
-          <div className="inline-flex items-center gap-1.5 text-xs text-[#00E676] truncate">
+          <div className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-[#00E676] truncate">
             <Zap className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate font-medium">
               {fixture.featuredBoost.selectionName}{' '}
@@ -221,14 +225,14 @@ export function MatchCard({
             </span>
           </div>
         ) : (
-          <span className="text-[11px] text-[#94A3B8] truncate">
+          <span className="text-[11px] text-slate-500 dark:text-[#94A3B8] truncate">
             {fixture.fixture.venue.name}
           </span>
         )}
 
         <Link
           href={`/matches/${fixture.fixture.id}`}
-          className="inline-flex items-center gap-0.5 text-xs font-semibold text-white hover:text-[#00E676] transition-colors whitespace-nowrap shrink-0"
+          className="inline-flex items-center gap-0.5 text-xs font-semibold text-slate-800 dark:text-white hover:text-emerald-600 dark:hover:text-[#00E676] transition-colors whitespace-nowrap shrink-0"
         >
           <span>+{totalMarketsCount}</span>
           <ChevronRight className="w-3.5 h-3.5" />
