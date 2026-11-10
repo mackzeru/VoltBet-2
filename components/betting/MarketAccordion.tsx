@@ -35,14 +35,11 @@ export function MarketAccordion({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-full min-h-[48px] px-4 py-3 flex items-center justify-between gap-3 text-left hover:bg-[#1A2232]/60 transition-colors cursor-pointer"
+        className="w-full min-h-[46px] px-4 py-2.5 flex items-center justify-between gap-3 text-left hover:bg-[#1A2232]/60 transition-colors cursor-pointer"
       >
-        <div className="flex items-center gap-2.5 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
           <span className="text-sm font-semibold text-white truncate">
             {market.name}
-          </span>
-          <span className="text-xs font-mono tabular-nums text-[#94A3B8]">
-            · ID {market.id}
           </span>
           {isLocked && (
             <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-400">
@@ -60,10 +57,10 @@ export function MarketAccordion({
       </button>
 
       {isOpen && (
-        <div className="p-4 pt-2 border-t border-[#2A344B]/60">
+        <div className="p-3.5 pt-2 border-t border-[#2A344B]/60">
           <div
-            className={`grid gap-2.5 ${
-              is3Col ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'
+            className={`grid gap-2 ${
+              is3Col ? 'grid-cols-3' : 'grid-cols-2'
             }`}
           >
             {market.values.map((val) => {

@@ -12,7 +12,7 @@ import {
   Trophy,
   Lock,
   CheckCircle2,
-  User,
+  LogIn,
   ChevronDown,
 } from 'lucide-react';
 import { useWallet } from '@/context/WalletContext';
@@ -23,6 +23,9 @@ import { useTelegram } from '@/hooks/useTelegram';
 export function Header() {
   const pathname = usePathname();
   const {
+    isAuthenticated,
+    setIsAuthModalOpen,
+    userProfile,
     balance,
     notifications,
     unreadCount,
@@ -37,7 +40,7 @@ export function Header() {
     setIsLiveSimulationEnabled,
   } = useSportsData();
   const { simulateSettleOpenBets, placedBets } = useBetSlip();
-  const { user, hapticImpact } = useTelegram();
+  const { hapticImpact } = useTelegram();
 
   const [showNotifs, setShowNotifs] = useState(false);
   const [showSimBar, setShowSimBar] = useState(false);
@@ -50,7 +53,7 @@ export function Header() {
     setSimFeedback(msg);
     setTimeout(() => {
       setSimFeedback(null);
-    }, 2600);
+    }, 2200);
   };
 
   return (
@@ -59,12 +62,12 @@ export function Header() {
         {/* Zone 1: Brand Identity Logo & Wordmark */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 shrink-0 focus:outline-none"
+          className="flex items-center gap-2 shrink-0 focus:outline-none"
         >
           <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-[#00E676]/50 bg-[#121721] shrink-0">
             <Image
               src="/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg"
-              alt="VoltBet Logo"
+              alt="VoltBet"
               fill
               sizes="36px"
               className="object-cover"
@@ -84,7 +87,7 @@ export function Header() {
               pathname === '/' ? 'text-[#00E676] font-semibold' : ''
             }`}
           >
-            Sportsbook Lobby
+            Lobby
           </Link>
           <Link
             href="/live"
@@ -92,7 +95,7 @@ export function Header() {
               pathname.startsWith('/live') ? 'text-[#00E676] font-semibold' : ''
             }`}
           >
-            Live In-Play
+            Live
           </Link>
           <Link
             href="/my-bets"
@@ -108,54 +111,71 @@ export function Header() {
               pathname.startsWith('/wallet') ? 'text-[#00E676] font-semibold' : ''
             }`}
           >
-            ETB Wallet
+            Wallet
+          </Link>
+          <Link
+            href="/profile"
+            className={`hover:text-white transition-colors whitespace-nowrap shrink-0 ${
+              pathname.startsWith('/profile') ? 'text-[#00E676] font-semibold' : ''
+            }`}
+          >
+            Profile
           </Link>
         </nav>
 
-        {/* Zone 3: User Wallet Chip, Sim Toggle, Notifications & TMA User Badge */}
-        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-          {/* Active ETB Balance + Quick Deposit CTA */}
-          <div className="flex items-center rounded-xl bg-[#121721] border border-[#2A344B] p-1 pl-2.5 sm:pl-3 gap-2">
-            <div className="text-right">
-              <span className="block font-mono tabular-nums text-xs sm:text-sm font-bold text-white whitespace-nowrap">
-                {balance.toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}{' '}
-                <span className="text-[#00E676]">ETB</span>
-              </span>
+        {/* Zone 3: Balance, Auth / Profile & Sim Bar Trigger */}
+        <div className="flex items-center gap-2 shrink-0">
+          {isAuthenticated ? (
+            <div className="flex items-center rounded-xl bg-[#121721] border border-[#2A344B] p-1 pl-2.5 gap-2">
+              <Link href="/wallet" className="text-right">
+                <span className="block font-mono tabular-nums text-xs sm:text-sm font-bold text-white whitespace-nowrap">
+                  {balance.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  <span className="text-[#00E676]">ETB</span>
+                </span>
+              </Link>
+              <Link
+                href="/wallet"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14] text-xs font-bold transition-colors whitespace-nowrap shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span className="hidden sm:inline">Deposit</span>
+              </Link>
             </div>
-            <Link
-              href="/wallet"
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14] text-xs font-bold transition-colors whitespace-nowrap shrink-0"
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsAuthModalOpen(true)}
+              className="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14] text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span className="hidden xs:inline">Deposit</span>
-            </Link>
-          </div>
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </button>
+          )}
 
-          {/* Collapsible Developer Simulation Bar Trigger */}
+          {/* Sim Control Bar Trigger */}
           <button
             type="button"
             onClick={() => {
               hapticImpact('light');
               setShowSimBar((prev) => !prev);
             }}
-            className={`min-h-[38px] px-2.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer ${
+            className={`min-h-[38px] px-2.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-1 transition-colors cursor-pointer ${
               showSimBar
                 ? 'bg-[#00E676]/15 border-[#00E676] text-[#00E676]'
                 : 'bg-[#121721] border-[#2A344B] text-[#94A3B8] hover:text-white'
             }`}
-            title="Toggle Interactive Simulation Bar"
+            title="Simulation Controls"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Sim</span>
             <ChevronDown
               className={`w-3 h-3 transition-transform ${showSimBar ? 'rotate-180' : ''}`}
             />
           </button>
 
-          {/* Notification Bell with Unread Indicator */}
+          {/* Notifications */}
           <div className="relative">
             <button
               type="button"
@@ -175,9 +195,9 @@ export function Header() {
             </button>
 
             {showNotifs && (
-              <div className="absolute right-0 mt-2 w-80 rounded-2xl bg-[#1E2638] border border-[#2A344B] shadow-2xl p-3 z-50 space-y-2">
+              <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-[#1E2638] border border-[#2A344B] shadow-2xl p-3 z-50 space-y-2">
                 <div className="flex items-center justify-between pb-2 border-b border-[#2A344B]">
-                  <span className="text-xs font-bold text-white">Activity & Alerts</span>
+                  <span className="text-xs font-bold text-white">Notifications</span>
                   <button
                     type="button"
                     onClick={() => setShowNotifs(false)}
@@ -186,7 +206,7 @@ export function Header() {
                     Close
                   </button>
                 </div>
-                <div className="max-h-64 overflow-y-auto space-y-2">
+                <div className="max-h-60 overflow-y-auto space-y-1.5">
                   {notifications.map((n) => (
                     <div
                       key={n.id}
@@ -206,59 +226,61 @@ export function Header() {
             )}
           </div>
 
-          {/* Telegram User Avatar & Username Badge */}
-          <div
-            className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[#121721] border border-[#2A344B]"
-            title={`Telegram User: @${user.username}`}
-          >
-            <div className="w-6 h-6 rounded-lg bg-[#00E676]/20 border border-[#00E676]/50 flex items-center justify-center text-[#00E676]">
-              <User className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-xs font-medium text-white truncate max-w-[100px]">
-              @{user.username}
-            </span>
-          </div>
+          {/* Profile Avatar Button */}
+          {isAuthenticated && (
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-[#121721] hover:bg-[#1A2232] border border-[#2A344B] transition-colors"
+              title={`${userProfile.fullName} (${userProfile.vipTier})`}
+            >
+              <div
+                className="w-6 h-6 rounded-lg flex items-center justify-center font-mono text-[11px] font-bold text-[#0B0E14]"
+                style={{ backgroundColor: userProfile.avatarColor }}
+              >
+                {userProfile.fullName
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
+              </div>
+              <span className="hidden lg:inline text-xs font-semibold text-white truncate max-w-[90px]">
+                {userProfile.fullName.split(' ')[0]}
+              </span>
+            </Link>
+          )}
         </div>
       </div>
 
       {/* Collapsible Developer Simulation Control Bar */}
       {showSimBar && (
-        <div className="bg-[#121721] border-t border-[#2A344B] px-3 sm:px-6 py-2.5">
+        <div className="bg-[#121721] border-t border-[#2A344B] px-3 sm:px-6 py-2">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs text-[#94A3B8]">
-              <span className="font-semibold text-white">Sandbox Controls:</span>
-              {simFeedback ? (
-                <span className="text-[#00E676] font-medium">{simFeedback}</span>
-              ) : (
-                <span className="hidden md:inline">
-                  Test live API-Football odds shifts, market locks, bet grading, and deposit verification.
-                </span>
-              )}
-            </div>
+            <span className="text-xs font-semibold text-[#00E676]">
+              {simFeedback || 'Simulation Controls'}
+            </span>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => {
                   triggerManualOddsDrift();
-                  showTempFeedback('Shifted live odds across random fixtures.');
+                  showTempFeedback('Shifted live odds');
                 }}
-                className="px-3 py-1.5 rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1.5 rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1 cursor-pointer"
               >
                 <Zap className="w-3.5 h-3.5 text-[#00E676]" />
-                <span>Simulate Odds Drift</span>
+                <span>Odds Drift</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => {
                   toggleRandomMarketLock();
-                  showTempFeedback('Toggled VAR / Dangerous Attack lock on a live match.');
+                  showTempFeedback('Toggled live market lock');
                 }}
-                className="px-3 py-1.5 rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1.5 rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1 cursor-pointer"
               >
                 <Lock className="w-3.5 h-3.5 text-amber-400" />
-                <span>Toggle Market Lock</span>
+                <span>Market Lock</span>
               </button>
 
               <button
@@ -266,15 +288,13 @@ export function Header() {
                 onClick={() => {
                   const settled = simulateSettleOpenBets('WON');
                   showTempFeedback(
-                    settled > 0
-                      ? `Settled ${settled} open bet(s) as WON & credited wallet!`
-                      : 'No open bets to settle — place a bet first.'
+                    settled > 0 ? `Settled ${settled} slip(s) WON` : 'No open bets'
                   );
                 }}
-                className="px-3 py-1.5 rounded-lg bg-[#00E676]/15 hover:bg-[#00E676]/25 border border-[#00E676]/50 text-xs font-bold text-[#00E676] inline-flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1.5 rounded-lg bg-[#00E676]/15 hover:bg-[#00E676]/25 border border-[#00E676]/50 text-xs font-bold text-[#00E676] inline-flex items-center gap-1 cursor-pointer"
               >
                 <Trophy className="w-3.5 h-3.5" />
-                <span>Settle Open Bets (WON)</span>
+                <span>Settle Bets (WON)</span>
               </button>
 
               <button
@@ -282,12 +302,10 @@ export function Header() {
                 onClick={() => {
                   const count = approveAllPendingDeposits();
                   showTempFeedback(
-                    count > 0
-                      ? `Approved ${count} pending ETB deposit(s)!`
-                      : 'No pending deposits — submit one in Wallet.'
+                    count > 0 ? `Approved ${count} deposit(s)` : 'No pending deposits'
                   );
                 }}
-                className="px-3 py-1.5 rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1.5 rounded-lg bg-[#1E2638] hover:bg-[#2A344B] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1 cursor-pointer"
               >
                 <CheckCircle2 className="w-3.5 h-3.5 text-[#00E676]" />
                 <span>
@@ -304,7 +322,7 @@ export function Header() {
                     : 'bg-[#1E2638] border-[#2A344B] text-[#94A3B8]'
                 }`}
               >
-                Auto-Stream: {isLiveSimulationEnabled ? 'ON' : 'PAUSED'}
+                Live Stream: {isLiveSimulationEnabled ? 'ON' : 'OFF'}
               </button>
             </div>
           </div>

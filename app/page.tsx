@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   Search,
   Zap,
@@ -38,7 +37,6 @@ export default function SportsbookLobbyPage() {
   const [activeTab, setActiveTab] = useState<LobbyTab>('live');
   const [bannerIndex, setBannerIndex] = useState<number>(0);
 
-  // Only show soccer matches in the main Football Lobby feed
   const soccerFixtures = useMemo(
     () => fixtures.filter((f) => !f.sport || f.sport === 'Soccer'),
     [fixtures]
@@ -54,12 +52,10 @@ export default function SportsbookLobbyPage() {
 
   const filteredFixtures = useMemo(() => {
     return soccerFixtures.filter((fix) => {
-      // League filter
       if (selectedLeagueId !== null && fix.league.id !== selectedLeagueId) {
         return false;
       }
 
-      // Search query filter
       if (searchQuery.trim() !== '') {
         const q = searchQuery.toLowerCase();
         const matchHome = fix.teams.home.name.toLowerCase().includes(q);
@@ -68,7 +64,6 @@ export default function SportsbookLobbyPage() {
         if (!matchHome && !matchAway && !matchLeague) return false;
       }
 
-      // Tab filter
       const isLive = ['1H', 'HT', '2H', 'LIVE'].includes(fix.fixture.status.short);
       const isTomorrow = fix.fixture.date.startsWith('2026-11-11');
 
@@ -90,15 +85,18 @@ export default function SportsbookLobbyPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 space-y-5">
-      {/* Top Navigation League Scroller */}
-      <section aria-label="League Filter Scroller" className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 space-y-4">
+      {/* Top Navigation League Scroller with Real League Logos */}
+      <section
+        aria-label="League Filter Scroller"
+        className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"
+      >
         <button
           type="button"
           onClick={() => setSelectedLeagueId(null)}
-          className={`min-h-[40px] px-3.5 py-2 rounded-xl border text-xs font-semibold inline-flex items-center gap-2 whitespace-nowrap shrink-0 transition-all cursor-pointer ${
+          className={`min-h-[40px] px-3.5 py-1.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-2 whitespace-nowrap shrink-0 transition-all cursor-pointer ${
             selectedLeagueId === null
-              ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold shadow-[0_0_16px_rgba(0,230,118,0.2)]'
+              ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold'
               : 'bg-[#121721] border-[#2A344B] text-[#94A3B8] hover:text-white'
           }`}
         >
@@ -112,57 +110,44 @@ export default function SportsbookLobbyPage() {
             <button
               key={league.id}
               type="button"
-              onClick={() =>
-                setSelectedLeagueId(isActive ? null : league.id)
-              }
-              className={`min-h-[40px] px-3.5 py-2 rounded-xl border text-xs font-semibold inline-flex items-center gap-2 whitespace-nowrap shrink-0 transition-all cursor-pointer ${
+              onClick={() => setSelectedLeagueId(isActive ? null : league.id)}
+              className={`min-h-[40px] px-3 py-1.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-2 whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold shadow-[0_0_16px_rgba(0,230,118,0.2)]'
+                  ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold'
                   : 'bg-[#121721] hover:bg-[#1A2232] border-[#2A344B] text-white'
               }`}
             >
-              <span
-                className="w-2 h-2 rounded-full shrink-0"
-                style={{ backgroundColor: isActive ? '#0B0E14' : league.accentColor }}
+              <TeamCrest
+                name={league.name}
+                logo={league.logo}
+                shortCode={league.shortName}
+                primaryColor={league.accentColor}
+                size="xs"
               />
               <span>{league.name}</span>
-              <span
-                className={`font-mono text-[10px] ${
-                  isActive ? 'text-[#0B0E14]/80' : 'text-[#94A3B8]'
-                }`}
-              >
-                {league.code}
-              </span>
             </button>
           );
         })}
       </section>
 
-      {/* Main Responsive Layout: Left/Center Feed + Right Sticky Bet Slip */}
       <div className="flex flex-col lg:flex-row items-start gap-6">
-        {/* Left / Center Feed Column */}
-        <div className="w-full flex-1 min-w-0 space-y-5">
-          {/* Hero Promotional Banner Carousel */}
-          <section className="relative rounded-2xl bg-gradient-to-r from-[#1A2232] via-[#1E2638] to-[#121721] border border-[#2A344B] p-4 sm:p-6 overflow-hidden">
+        <div className="w-full flex-1 min-w-0 space-y-4">
+          {/* Hero Promotional Banner with Real Team Logos */}
+          <section className="relative rounded-2xl bg-gradient-to-r from-[#1A2232] via-[#1E2638] to-[#121721] border border-[#2A344B] p-4 sm:p-5 overflow-hidden">
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-2 max-w-xl">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#00E676]">
+              <div className="space-y-1.5 max-w-xl">
+                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#00E676]">
                   <Zap className="w-3.5 h-3.5" />
                   <span>{activePromo.tag}</span>
                 </div>
 
-                <h1
-                  className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight"
-                  style={{ textWrap: 'balance' }}
-                >
+                <h1 className="font-display text-lg sm:text-2xl font-extrabold text-white tracking-tight">
                   {activePromo.title}
                 </h1>
 
-                <p className="text-xs sm:text-sm text-[#94A3B8]">
-                  {activePromo.subtitle}
-                </p>
+                <p className="text-xs text-[#94A3B8]">{activePromo.subtitle}</p>
 
-                <div className="pt-2 flex flex-wrap items-center gap-2.5">
+                <div className="pt-2 flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() =>
@@ -177,20 +162,18 @@ export default function SportsbookLobbyPage() {
                         odd: parseFloat(activePromo.boostedOdd),
                       })
                     }
-                    className={`min-h-[44px] px-4 py-2 rounded-xl font-bold text-xs sm:text-sm inline-flex items-center gap-2 transition-all cursor-pointer ${
+                    className={`min-h-[40px] px-3.5 py-1.5 rounded-xl font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer ${
                       isSelected(
                         activePromo.fixtureId,
                         activePromo.marketId,
                         activePromo.selectionName
                       )
                         ? 'bg-white text-[#0B0E14]'
-                        : 'bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14] shadow-[0_0_20px_rgba(0,230,118,0.3)]'
+                        : 'bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14]'
                     }`}
                   >
-                    <span>
-                      Bet {activePromo.selectionName} @
-                    </span>
-                    <span className="line-through opacity-60 font-mono tabular-nums text-xs">
+                    <span>{activePromo.selectionName}</span>
+                    <span className="line-through opacity-60 font-mono tabular-nums">
                       {activePromo.oldOdd}
                     </span>
                     <span className="font-mono tabular-nums font-extrabold">
@@ -200,46 +183,51 @@ export default function SportsbookLobbyPage() {
 
                   <Link
                     href={`/matches/${activePromo.fixtureId}`}
-                    className="min-h-[44px] px-3.5 py-2 rounded-xl bg-[#121721] hover:bg-[#1A2232] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1"
+                    className="min-h-[40px] px-3 py-1.5 rounded-xl bg-[#121721] hover:bg-[#1A2232] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1"
                   >
-                    <span>Match Center</span>
+                    <span>Markets</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>
 
-              {/* Right Brand Emblem & Carousel Controls */}
+              {/* Right Matchup Crests & Carousel Arrows */}
               <div className="flex sm:flex-col items-center sm:items-end justify-between gap-3 shrink-0">
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-[#00E676]/40 bg-[#0B0E14]">
-                  <Image
-                    src="/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg"
-                    alt="VoltBet Featured Match"
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                    referrerPolicy="no-referrer"
+                <div className="flex items-center gap-2 bg-[#0B0E14]/70 border border-[#2A344B] rounded-2xl px-3 py-2">
+                  <TeamCrest
+                    name={activePromo.homeName}
+                    logo={activePromo.homeLogo}
+                    size="md"
+                  />
+                  <span className="font-mono text-xs font-bold text-[#94A3B8]">
+                    VS
+                  </span>
+                  <TeamCrest
+                    name={activePromo.awayName}
+                    logo={activePromo.awayLogo}
+                    size="md"
                   />
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => handleCycleBanner('prev')}
-                    className="w-8 h-8 rounded-lg bg-[#121721] hover:bg-[#2A344B] border border-[#2A344B] flex items-center justify-center text-white cursor-pointer"
-                    aria-label="Previous promo banner"
+                    className="w-7 h-7 rounded-lg bg-[#121721] hover:bg-[#2A344B] border border-[#2A344B] flex items-center justify-center text-white cursor-pointer"
+                    aria-label="Previous promo"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
-                  <span className="font-mono tabular-nums text-xs text-[#94A3B8] px-1">
+                  <span className="font-mono tabular-nums text-[11px] text-[#94A3B8] px-1">
                     {bannerIndex + 1}/{PROMO_BANNERS.length}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleCycleBanner('next')}
-                    className="w-8 h-8 rounded-lg bg-[#121721] hover:bg-[#2A344B] border border-[#2A344B] flex items-center justify-center text-white cursor-pointer"
-                    aria-label="Next promo banner"
+                    className="w-7 h-7 rounded-lg bg-[#121721] hover:bg-[#2A344B] border border-[#2A344B] flex items-center justify-center text-white cursor-pointer"
+                    aria-label="Next promo"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -247,20 +235,19 @@ export default function SportsbookLobbyPage() {
           </section>
 
           {/* Tab Filter Bar & Search Row */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            {/* Segmented Tab Filter Bar */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar p-1 rounded-xl bg-[#121721] border border-[#2A344B]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-xl bg-[#121721] border border-[#2A344B]">
               <button
                 type="button"
                 onClick={() => setActiveTab('live')}
-                className={`min-h-[38px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-2 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'live'
                     ? 'bg-[#1E2638] text-white border border-[#2A344B]'
                     : 'text-[#94A3B8] hover:text-white'
                 }`}
               >
                 <span className="w-2 h-2 rounded-full bg-[#EF4444] animate-pulse" />
-                <span>Live In-Play</span>
+                <span>Live</span>
                 <span className="font-mono tabular-nums text-[#00E676]">
                   ({liveCount})
                 </span>
@@ -269,20 +256,20 @@ export default function SportsbookLobbyPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab('today')}
-                className={`min-h-[38px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'today'
                     ? 'bg-[#1E2638] text-white border border-[#2A344B]'
                     : 'text-[#94A3B8] hover:text-white'
                 }`}
               >
                 <Clock className="w-3.5 h-3.5" />
-                <span>Upcoming Today</span>
+                <span>Today</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('tomorrow')}
-                className={`min-h-[38px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'tomorrow'
                     ? 'bg-[#1E2638] text-white border border-[#2A344B]'
                     : 'text-[#94A3B8] hover:text-white'
@@ -295,33 +282,32 @@ export default function SportsbookLobbyPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab('outrights')}
-                className={`min-h-[38px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeTab === 'outrights'
                     ? 'bg-[#1E2638] text-white border border-[#2A344B]'
                     : 'text-[#94A3B8] hover:text-white'
                 }`}
               >
                 <Award className="w-3.5 h-3.5" />
-                <span>Outrights / Tournaments</span>
+                <span>Outrights</span>
               </button>
             </div>
 
-            {/* Search Input */}
-            <div className="relative w-full sm:w-60 shrink-0">
+            <div className="relative w-full sm:w-56 shrink-0">
               <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search club or league..."
-                className="w-full h-10 pl-9 pr-3 rounded-xl bg-[#121721] border border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-white placeholder-[#94A3B8]"
+                placeholder="Search team or league..."
+                className="w-full h-9 pl-9 pr-3 rounded-xl bg-[#121721] border border-[#2A344B] focus:border-[#00E676] focus:outline-none text-xs text-white placeholder-[#94A3B8]"
               />
             </div>
           </div>
 
           {/* Match Card Grid or Outrights View */}
           {activeTab === 'outrights' ? (
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               {outrights
                 .filter(
                   (o) => selectedLeagueId === null || o.leagueId === selectedLeagueId
@@ -331,20 +317,28 @@ export default function SportsbookLobbyPage() {
                     key={outright.id}
                     className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 space-y-3"
                   >
-                    <div className="flex items-center justify-between gap-2 text-xs text-[#94A3B8]">
-                      <span>
-                        {outright.leagueName} · {outright.country} · Season {outright.season}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <TeamCrest
+                          name={outright.leagueName}
+                          logo={outright.leagueLogo}
+                          size="xs"
+                        />
+                        <h3 className="font-display text-sm font-bold text-white">
+                          {outright.title}
+                        </h3>
+                      </div>
+                      <span className="text-xs font-mono text-[#94A3B8]">
+                        {outright.season}
                       </span>
-                      <span className="font-mono">Closes {outright.deadline}</span>
                     </div>
-                    <h3 className="font-display text-base font-bold text-white">
-                      {outright.title}
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {outright.favorites.map((fav) => (
                         <div key={fav.teamId} className="flex items-center gap-2">
                           <TeamCrest
                             name={fav.teamName}
+                            logo={fav.teamLogo}
                             shortCode={fav.shortCode}
                             primaryColor={fav.primaryColor}
                             size="sm"
@@ -353,11 +347,7 @@ export default function SportsbookLobbyPage() {
                             <OddsButton
                               label={fav.teamName}
                               odd={fav.odd}
-                              selected={isSelected(
-                                outright.id,
-                                99,
-                                fav.teamName
-                              )}
+                              selected={isSelected(outright.id, 99, fav.teamName)}
                               onClick={() =>
                                 toggleSelection({
                                   fixtureId: outright.id,
@@ -365,7 +355,7 @@ export default function SportsbookLobbyPage() {
                                   leagueName: outright.leagueName,
                                   isLive: false,
                                   marketId: 99,
-                                  marketName: 'Tournament Outright Winner',
+                                  marketName: 'Outright Winner',
                                   selectionName: fav.teamName,
                                   odd: parseFloat(fav.odd),
                                 })
@@ -379,13 +369,8 @@ export default function SportsbookLobbyPage() {
                 ))}
             </div>
           ) : filteredFixtures.length === 0 ? (
-            <div className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-10 text-center space-y-3">
-              <p className="text-sm font-semibold text-white">
-                No fixtures match your current filter.
-              </p>
-              <p className="text-xs text-[#94A3B8]">
-                Try switching between Live In-Play, Upcoming Today, or clearing your league filter.
-              </p>
+            <div className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-8 text-center space-y-2.5">
+              <p className="text-sm font-semibold text-white">No matches found</p>
               <button
                 type="button"
                 onClick={() => {
@@ -393,13 +378,13 @@ export default function SportsbookLobbyPage() {
                   setSearchQuery('');
                   setActiveTab('live');
                 }}
-                className="px-4 py-2 rounded-xl bg-[#00E676] text-[#0B0E14] text-xs font-bold cursor-pointer"
+                className="px-4 py-1.5 rounded-xl bg-[#00E676] text-[#0B0E14] text-xs font-bold cursor-pointer"
               >
                 Reset Filters
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
               {filteredFixtures.map((fixture) => (
                 <MatchCard key={fixture.fixture.id} fixture={fixture} />
               ))}
@@ -407,7 +392,6 @@ export default function SportsbookLobbyPage() {
           )}
         </div>
 
-        {/* Right Sticky Bet Slip Sidebar (Desktop) & Floating Bottom Sheet (Mobile) */}
         <BetSlipDrawer />
       </div>
     </main>

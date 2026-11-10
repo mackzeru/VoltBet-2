@@ -6,6 +6,7 @@ export interface LeagueMetadata {
   shortName: string;
   country: string;
   code: string;
+  logo: string;
   accentColor: string;
 }
 
@@ -16,14 +17,16 @@ export const SUPPORTED_LEAGUES: LeagueMetadata[] = [
     shortName: 'EPL',
     country: 'England',
     code: 'ENG',
+    logo: 'https://media.api-sports.io/football/leagues/39.png',
     accentColor: '#38BDF8',
   },
   {
     id: 2,
-    name: 'UEFA Champions League',
+    name: 'Champions League',
     shortName: 'UCL',
     country: 'Europe',
     code: 'EUR',
+    logo: 'https://media.api-sports.io/football/leagues/2.png',
     accentColor: '#6366F1',
   },
   {
@@ -32,6 +35,7 @@ export const SUPPORTED_LEAGUES: LeagueMetadata[] = [
     shortName: 'LAL',
     country: 'Spain',
     code: 'ESP',
+    logo: 'https://media.api-sports.io/football/leagues/140.png',
     accentColor: '#F43F5E',
   },
   {
@@ -40,6 +44,7 @@ export const SUPPORTED_LEAGUES: LeagueMetadata[] = [
     shortName: 'SER',
     country: 'Italy',
     code: 'ITA',
+    logo: 'https://media.api-sports.io/football/leagues/135.png',
     accentColor: '#0EA5E9',
   },
   {
@@ -48,6 +53,7 @@ export const SUPPORTED_LEAGUES: LeagueMetadata[] = [
     shortName: 'BUN',
     country: 'Germany',
     code: 'GER',
+    logo: 'https://media.api-sports.io/football/leagues/78.png',
     accentColor: '#EF4444',
   },
   {
@@ -56,6 +62,7 @@ export const SUPPORTED_LEAGUES: LeagueMetadata[] = [
     shortName: 'L1',
     country: 'France',
     code: 'FRA',
+    logo: 'https://media.api-sports.io/football/leagues/61.png',
     accentColor: '#A855F7',
   },
 ];
@@ -66,53 +73,65 @@ export interface PromoBannerItem {
   tag: string;
   title: string;
   subtitle: string;
+  homeLogo: string;
+  awayLogo: string;
+  homeName: string;
+  awayName: string;
   marketId: number;
   marketName: string;
   selectionName: string;
   oldOdd: string;
   boostedOdd: string;
-  accentGradient: string;
 }
 
 export const PROMO_BANNERS: PromoBannerItem[] = [
   {
     id: 'promo-ars-mci',
     fixtureId: 103901,
-    tag: 'SUPER ODDS BOOST · LIVE 64’',
+    tag: 'LIVE 64’ · SUPER BOOST',
     title: 'Arsenal vs Manchester City',
-    subtitle: 'Emirates Stadium · Over 3.5 Total Goals & BTTS Special',
+    subtitle: 'Premier League · Over 3.5 Total Goals',
+    homeLogo: 'https://media.api-sports.io/football/teams/42.png',
+    awayLogo: 'https://media.api-sports.io/football/teams/50.png',
+    homeName: 'Arsenal',
+    awayName: 'Man City',
     marketId: 5,
     marketName: 'Goals Over/Under',
     selectionName: 'Over 3.5',
     oldOdd: '1.92',
     boostedOdd: '2.25',
-    accentGradient: 'from-[#00E676]/20 via-[#1E2638] to-[#0B0E14]',
   },
   {
     id: 'promo-rma-bar',
     fixtureId: 114002,
-    tag: 'EL CLÁSICO · LIVE IN-PLAY',
+    tag: 'EL CLÁSICO · LIVE 32’',
     title: 'Real Madrid vs FC Barcelona',
-    subtitle: 'Santiago Bernabéu · Penalty Awarded in Match Boost',
+    subtitle: 'La Liga · Penalty Awarded Special',
+    homeLogo: 'https://media.api-sports.io/football/teams/541.png',
+    awayLogo: 'https://media.api-sports.io/football/teams/529.png',
+    homeName: 'Real Madrid',
+    awayName: 'Barcelona',
     marketId: 40,
     marketName: 'Penalty Awarded',
     selectionName: 'Yes',
     oldOdd: '2.60',
     boostedOdd: '3.10',
-    accentGradient: 'from-[#38BDF8]/20 via-[#1E2638] to-[#0B0E14]',
   },
   {
     id: 'promo-ucl-night',
     fixtureId: 100205,
-    tag: 'CHAMPIONS LEAGUE SHOWDOWN',
+    tag: 'UCL FEATURED',
     title: 'Liverpool vs Paris Saint-Germain',
-    subtitle: 'Anfield · Quarter-Final 1st Leg · High-Voltage 1X2 Line',
+    subtitle: 'Anfield · Full-Time Home Win Boost',
+    homeLogo: 'https://media.api-sports.io/football/teams/40.png',
+    awayLogo: 'https://media.api-sports.io/football/teams/85.png',
+    homeName: 'Liverpool',
+    awayName: 'PSG',
     marketId: 1,
     marketName: 'Match Winner',
     selectionName: 'Home',
     oldOdd: '1.85',
     boostedOdd: '2.05',
-    accentGradient: 'from-[#10B981]/20 via-[#1E2638] to-[#0B0E14]',
   },
 ];
 
@@ -144,7 +163,7 @@ function buildFullMarkets(config: {
   return [
     {
       id: 1,
-      name: 'Match Winner',
+      name: 'Match Winner (1X2)',
       values: [
         { value: 'Home', odd: config.home },
         { value: 'Draw', odd: config.draw },
@@ -221,7 +240,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
   {
     sport: 'Soccer',
     featuredBoost: {
-      label: 'Live Derby Boost',
+      label: 'Boost',
       boostedFrom: '1.92',
       boostedTo: '2.25',
       marketName: 'Goals Over/Under',
@@ -236,7 +255,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     fixture: {
       id: 103901,
-      referee: 'Michael Oliver, England',
+      referee: 'Michael Oliver',
       timezone: 'UTC',
       date: '2026-11-10T19:30:00+00:00',
       timestamp: 1794339000,
@@ -248,10 +267,10 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       id: 39,
       name: 'Premier League',
       country: 'England',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/39.png',
       flag: 'GB',
       season: 2026,
-      round: 'Regular Season - 12',
+      round: 'Matchweek 12',
     },
     teams: {
       home: {
@@ -260,7 +279,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'ARS',
         primaryColor: '#EF4444',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/42.png',
         winner: true,
       },
       away: {
@@ -269,7 +288,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'MCI',
         primaryColor: '#38BDF8',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/50.png',
         winner: false,
       },
     },
@@ -283,7 +302,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     events: [
       {
         time: { elapsed: 14, extra: null },
-        team: { id: 42, name: 'Arsenal', logo: '' },
+        team: { id: 42, name: 'Arsenal', logo: 'https://media.api-sports.io/football/teams/42.png' },
         player: { id: 1460, name: 'Bukayo Saka' },
         assist: { id: 37127, name: 'Martin Ødegaard' },
         type: 'Goal',
@@ -291,7 +310,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 29, extra: null },
-        team: { id: 50, name: 'Manchester City', logo: '' },
+        team: { id: 50, name: 'Manchester City', logo: 'https://media.api-sports.io/football/teams/50.png' },
         player: { id: 1100, name: 'Erling Haaland' },
         assist: { id: 629, name: 'Kevin De Bruyne' },
         type: 'Goal',
@@ -299,7 +318,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 41, extra: null },
-        team: { id: 50, name: 'Manchester City', logo: '' },
+        team: { id: 50, name: 'Manchester City', logo: 'https://media.api-sports.io/football/teams/50.png' },
         player: { id: 44, name: 'Rodri' },
         assist: { id: null, name: null },
         type: 'Card',
@@ -307,7 +326,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 53, extra: null },
-        team: { id: 42, name: 'Arsenal', logo: '' },
+        team: { id: 42, name: 'Arsenal', logo: 'https://media.api-sports.io/football/teams/42.png' },
         player: { id: 2937, name: 'Declan Rice' },
         assist: { id: null, name: null },
         type: 'Card',
@@ -315,7 +334,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 59, extra: null },
-        team: { id: 42, name: 'Arsenal', logo: '' },
+        team: { id: 42, name: 'Arsenal', logo: 'https://media.api-sports.io/football/teams/42.png' },
         player: { id: 978, name: 'Kai Havertz' },
         assist: { id: 1460, name: 'Bukayo Saka' },
         type: 'Goal',
@@ -324,7 +343,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     ],
     statistics: [
       {
-        team: { id: 42, name: 'Arsenal', logo: '' },
+        team: { id: 42, name: 'Arsenal', logo: 'https://media.api-sports.io/football/teams/42.png' },
         statistics: [
           { type: 'Ball Possession', value: '52%' },
           { type: 'Total Shots', value: 14 },
@@ -337,7 +356,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         ],
       },
       {
-        team: { id: 50, name: 'Manchester City', logo: '' },
+        team: { id: 50, name: 'Manchester City', logo: 'https://media.api-sports.io/football/teams/50.png' },
         statistics: [
           { type: 'Ball Possession', value: '48%' },
           { type: 'Total Shots', value: 12 },
@@ -397,22 +416,22 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     fixture: {
       id: 114002,
-      referee: 'Jesús Gil Manzano, Spain',
+      referee: 'Jesús Gil Manzano',
       timezone: 'UTC',
       date: '2026-11-10T20:00:00+00:00',
       timestamp: 1794340800,
       periods: { first: 1794340800, second: null },
-      venue: { id: 1456, name: 'Estadio Santiago Bernabéu', city: 'Madrid' },
+      venue: { id: 1456, name: 'Santiago Bernabéu', city: 'Madrid' },
       status: { long: 'First Half', short: '1H', elapsed: 32 },
     },
     league: {
       id: 140,
       name: 'La Liga',
       country: 'Spain',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/140.png',
       flag: 'ES',
       season: 2026,
-      round: 'Regular Season - 13',
+      round: 'Matchweek 13',
     },
     teams: {
       home: {
@@ -421,7 +440,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'RMA',
         primaryColor: '#F59E0B',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/541.png',
         winner: null,
       },
       away: {
@@ -430,7 +449,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'BAR',
         primaryColor: '#3B82F6',
         secondaryColor: '#EF4444',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/529.png',
         winner: null,
       },
     },
@@ -444,7 +463,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     events: [
       {
         time: { elapsed: 11, extra: null },
-        team: { id: 529, name: 'FC Barcelona', logo: '' },
+        team: { id: 529, name: 'FC Barcelona', logo: 'https://media.api-sports.io/football/teams/529.png' },
         player: { id: 386828, name: 'Lamine Yamal' },
         assist: { id: 133609, name: 'Pedri' },
         type: 'Goal',
@@ -452,7 +471,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 23, extra: null },
-        team: { id: 541, name: 'Real Madrid', logo: '' },
+        team: { id: 541, name: 'Real Madrid', logo: 'https://media.api-sports.io/football/teams/541.png' },
         player: { id: 278, name: 'Kylian Mbappé' },
         assist: { id: 762, name: 'Vinícius Júnior' },
         type: 'Goal',
@@ -460,7 +479,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 28, extra: null },
-        team: { id: 529, name: 'FC Barcelona', logo: '' },
+        team: { id: 529, name: 'FC Barcelona', logo: 'https://media.api-sports.io/football/teams/529.png' },
         player: { id: 101814, name: 'Ronald Araújo' },
         assist: { id: null, name: null },
         type: 'Card',
@@ -469,7 +488,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     ],
     statistics: [
       {
-        team: { id: 541, name: 'Real Madrid', logo: '' },
+        team: { id: 541, name: 'Real Madrid', logo: 'https://media.api-sports.io/football/teams/541.png' },
         statistics: [
           { type: 'Ball Possession', value: '46%' },
           { type: 'Total Shots', value: 8 },
@@ -482,7 +501,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         ],
       },
       {
-        team: { id: 529, name: 'FC Barcelona', logo: '' },
+        team: { id: 529, name: 'FC Barcelona', logo: 'https://media.api-sports.io/football/teams/529.png' },
         statistics: [
           { type: 'Ball Possession', value: '54%' },
           { type: 'Total Shots', value: 9 },
@@ -542,7 +561,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     fixture: {
       id: 107803,
-      referee: 'Felix Zwayer, Germany',
+      referee: 'Felix Zwayer',
       timezone: 'UTC',
       date: '2026-11-10T18:30:00+00:00',
       timestamp: 1794335400,
@@ -554,10 +573,10 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       id: 78,
       name: 'Bundesliga',
       country: 'Germany',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/78.png',
       flag: 'DE',
       season: 2026,
-      round: 'Regular Season - 11',
+      round: 'Matchweek 11',
     },
     teams: {
       home: {
@@ -566,7 +585,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'BAY',
         primaryColor: '#DC2626',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/157.png',
         winner: true,
       },
       away: {
@@ -575,7 +594,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'BVB',
         primaryColor: '#EAB308',
         secondaryColor: '#000000',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/165.png',
         winner: false,
       },
     },
@@ -589,7 +608,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     events: [
       {
         time: { elapsed: 9, extra: null },
-        team: { id: 157, name: 'Bayern Munich', logo: '' },
+        team: { id: 157, name: 'Bayern Munich', logo: 'https://media.api-sports.io/football/teams/157.png' },
         player: { id: 184, name: 'Harry Kane' },
         assist: { id: 181812, name: 'Jamal Musiala' },
         type: 'Goal',
@@ -597,7 +616,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 27, extra: null },
-        team: { id: 165, name: 'Borussia Dortmund', logo: '' },
+        team: { id: 165, name: 'Borussia Dortmund', logo: 'https://media.api-sports.io/football/teams/165.png' },
         player: { id: 26305, name: 'Karim Adeyemi' },
         assist: { id: 984, name: 'Julian Brandt' },
         type: 'Goal',
@@ -605,7 +624,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 44, extra: null },
-        team: { id: 157, name: 'Bayern Munich', logo: '' },
+        team: { id: 157, name: 'Bayern Munich', logo: 'https://media.api-sports.io/football/teams/157.png' },
         player: { id: 181812, name: 'Jamal Musiala' },
         assist: { id: 502, name: 'Joshua Kimmich' },
         type: 'Goal',
@@ -613,7 +632,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 63, extra: null },
-        team: { id: 165, name: 'Borussia Dortmund', logo: '' },
+        team: { id: 165, name: 'Borussia Dortmund', logo: 'https://media.api-sports.io/football/teams/165.png' },
         player: { id: 25397, name: 'Serhou Guirassy' },
         assist: { id: null, name: null },
         type: 'Goal',
@@ -621,7 +640,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 71, extra: null },
-        team: { id: 165, name: 'Borussia Dortmund', logo: '' },
+        team: { id: 165, name: 'Borussia Dortmund', logo: 'https://media.api-sports.io/football/teams/165.png' },
         player: { id: 259, name: 'Emre Can' },
         assist: { id: null, name: null },
         type: 'Card',
@@ -629,7 +648,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 76, extra: null },
-        team: { id: 157, name: 'Bayern Munich', logo: '' },
+        team: { id: 157, name: 'Bayern Munich', logo: 'https://media.api-sports.io/football/teams/157.png' },
         player: { id: 184, name: 'Harry Kane' },
         assist: { id: 1159, name: 'Michael Olise' },
         type: 'Goal',
@@ -638,7 +657,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     ],
     statistics: [
       {
-        team: { id: 157, name: 'Bayern Munich', logo: '' },
+        team: { id: 157, name: 'Bayern Munich', logo: 'https://media.api-sports.io/football/teams/157.png' },
         statistics: [
           { type: 'Ball Possession', value: '63%' },
           { type: 'Total Shots', value: 19 },
@@ -651,7 +670,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         ],
       },
       {
-        team: { id: 165, name: 'Borussia Dortmund', logo: '' },
+        team: { id: 165, name: 'Borussia Dortmund', logo: 'https://media.api-sports.io/football/teams/165.png' },
         statistics: [
           { type: 'Ball Possession', value: '37%' },
           { type: 'Total Shots', value: 10 },
@@ -711,22 +730,22 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     fixture: {
       id: 113504,
-      referee: 'Daniele Orsato, Italy',
+      referee: 'Daniele Orsato',
       timezone: 'UTC',
       date: '2026-11-10T19:45:00+00:00',
       timestamp: 1794339900,
       periods: { first: 1794339900, second: 1794343500 },
-      venue: { id: 907, name: 'Stadio Giuseppe Meazza (San Siro)', city: 'Milan' },
+      venue: { id: 907, name: 'San Siro', city: 'Milan' },
       status: { long: 'Second Half', short: '2H', elapsed: 54 },
     },
     league: {
       id: 135,
       name: 'Serie A',
       country: 'Italy',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/135.png',
       flag: 'IT',
       season: 2026,
-      round: 'Regular Season - 12',
+      round: 'Matchweek 12',
     },
     teams: {
       home: {
@@ -735,7 +754,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'INT',
         primaryColor: '#2563EB',
         secondaryColor: '#000000',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/505.png',
         winner: true,
       },
       away: {
@@ -744,7 +763,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'JUV',
         primaryColor: '#E2E8F0',
         secondaryColor: '#0F172A',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/496.png',
         winner: false,
       },
     },
@@ -758,7 +777,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     events: [
       {
         time: { elapsed: 37, extra: null },
-        team: { id: 505, name: 'Inter Milan', logo: '' },
+        team: { id: 505, name: 'Inter Milan', logo: 'https://media.api-sports.io/football/teams/505.png' },
         player: { id: 217, name: 'Lautaro Martínez' },
         assist: { id: 30558, name: 'Nicolò Barella' },
         type: 'Goal',
@@ -766,7 +785,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       },
       {
         time: { elapsed: 49, extra: null },
-        team: { id: 496, name: 'Juventus', logo: '' },
+        team: { id: 496, name: 'Juventus', logo: 'https://media.api-sports.io/football/teams/496.png' },
         player: { id: 30415, name: 'Manuel Locatelli' },
         assist: { id: null, name: null },
         type: 'Card',
@@ -775,7 +794,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     ],
     statistics: [
       {
-        team: { id: 505, name: 'Inter Milan', logo: '' },
+        team: { id: 505, name: 'Inter Milan', logo: 'https://media.api-sports.io/football/teams/505.png' },
         statistics: [
           { type: 'Ball Possession', value: '55%' },
           { type: 'Total Shots', value: 11 },
@@ -788,7 +807,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         ],
       },
       {
-        team: { id: 496, name: 'Juventus', logo: '' },
+        team: { id: 496, name: 'Juventus', logo: 'https://media.api-sports.io/football/teams/496.png' },
         statistics: [
           { type: 'Ball Possession', value: '45%' },
           { type: 'Total Shots', value: 7 },
@@ -840,7 +859,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
   {
     sport: 'Soccer',
     featuredBoost: {
-      label: 'UCL Night Boost',
+      label: 'UCL Boost',
       boostedFrom: '1.85',
       boostedTo: '2.05',
       marketName: 'Match Winner',
@@ -848,7 +867,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     fixture: {
       id: 100205,
-      referee: 'Clément Turpin, France',
+      referee: 'Clément Turpin',
       timezone: 'UTC',
       date: '2026-11-10T22:00:00+00:00',
       timestamp: 1794348000,
@@ -858,9 +877,9 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     league: {
       id: 2,
-      name: 'UEFA Champions League',
+      name: 'Champions League',
       country: 'Europe',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/2.png',
       flag: 'EU',
       season: 2026,
       round: 'League Phase - 5',
@@ -872,7 +891,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'LIV',
         primaryColor: '#DC2626',
         secondaryColor: '#FBBF24',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/40.png',
         winner: null,
       },
       away: {
@@ -881,7 +900,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'PSG',
         primaryColor: '#1D4ED8',
         secondaryColor: '#EF4444',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/85.png',
         winner: null,
       },
     },
@@ -895,7 +914,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     events: [],
     statistics: [
       {
-        team: { id: 40, name: 'Liverpool', logo: '' },
+        team: { id: 40, name: 'Liverpool', logo: 'https://media.api-sports.io/football/teams/40.png' },
         statistics: [
           { type: 'Ball Possession', value: '54%' },
           { type: 'Total Shots', value: 16 },
@@ -907,7 +926,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         ],
       },
       {
-        team: { id: 85, name: 'Paris Saint-Germain', logo: '' },
+        team: { id: 85, name: 'Paris Saint-Germain', logo: 'https://media.api-sports.io/football/teams/85.png' },
         statistics: [
           { type: 'Ball Possession', value: '46%' },
           { type: 'Total Shots', value: 13 },
@@ -959,7 +978,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     sport: 'Soccer',
     fixture: {
       id: 103906,
-      referee: 'Anthony Taylor, England',
+      referee: 'Anthony Taylor',
       timezone: 'UTC',
       date: '2026-11-10T22:30:00+00:00',
       timestamp: 1794349800,
@@ -971,10 +990,10 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       id: 39,
       name: 'Premier League',
       country: 'England',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/39.png',
       flag: 'GB',
       season: 2026,
-      round: 'Regular Season - 12',
+      round: 'Matchweek 12',
     },
     teams: {
       home: {
@@ -983,7 +1002,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'CHE',
         primaryColor: '#2563EB',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/49.png',
         winner: null,
       },
       away: {
@@ -992,7 +1011,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'MUN',
         primaryColor: '#DC2626',
         secondaryColor: '#FACC15',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/33.png',
         winner: null,
       },
     },
@@ -1045,7 +1064,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     sport: 'Soccer',
     fixture: {
       id: 113507,
-      referee: 'Marco Guida, Italy',
+      referee: 'Marco Guida',
       timezone: 'UTC',
       date: '2026-11-10T23:00:00+00:00',
       timestamp: 1794351600,
@@ -1057,10 +1076,10 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       id: 135,
       name: 'Serie A',
       country: 'Italy',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/135.png',
       flag: 'IT',
       season: 2026,
-      round: 'Regular Season - 12',
+      round: 'Matchweek 12',
     },
     teams: {
       home: {
@@ -1069,7 +1088,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'MIL',
         primaryColor: '#DC2626',
         secondaryColor: '#000000',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/489.png',
         winner: null,
       },
       away: {
@@ -1078,7 +1097,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'NAP',
         primaryColor: '#0EA5E9',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/492.png',
         winner: null,
       },
     },
@@ -1131,22 +1150,22 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     sport: 'Soccer',
     fixture: {
       id: 114008,
-      referee: 'Alejandro Hernández, Spain',
+      referee: 'Alejandro Hernández',
       timezone: 'UTC',
       date: '2026-11-11T19:00:00+00:00',
       timestamp: 1794423600,
       periods: { first: null, second: null },
-      venue: { id: 1921, name: 'Riyadh Air Metropolitano', city: 'Madrid' },
+      venue: { id: 1921, name: 'Metropolitano', city: 'Madrid' },
       status: { long: 'Not Started', short: 'NS', elapsed: null },
     },
     league: {
       id: 140,
       name: 'La Liga',
       country: 'Spain',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/140.png',
       flag: 'ES',
       season: 2026,
-      round: 'Regular Season - 13',
+      round: 'Matchweek 13',
     },
     teams: {
       home: {
@@ -1155,7 +1174,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'ATM',
         primaryColor: '#EF4444',
         secondaryColor: '#1E3A8A',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/530.png',
         winner: null,
       },
       away: {
@@ -1164,7 +1183,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'ATH',
         primaryColor: '#DC2626',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/531.png',
         winner: null,
       },
     },
@@ -1217,7 +1236,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     sport: 'Soccer',
     fixture: {
       id: 106109,
-      referee: 'Benoît Bastien, France',
+      referee: 'Benoît Bastien',
       timezone: 'UTC',
       date: '2026-11-11T20:45:00+00:00',
       timestamp: 1794429900,
@@ -1229,10 +1248,10 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       id: 61,
       name: 'Ligue 1',
       country: 'France',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/61.png',
       flag: 'FR',
       season: 2026,
-      round: 'Regular Season - 12',
+      round: 'Matchweek 12',
     },
     teams: {
       home: {
@@ -1241,7 +1260,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'OM',
         primaryColor: '#38BDF8',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/81.png',
         winner: null,
       },
       away: {
@@ -1250,7 +1269,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'MON',
         primaryColor: '#EF4444',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/91.png',
         winner: null,
       },
     },
@@ -1303,7 +1322,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     sport: 'Soccer',
     fixture: {
       id: 107810,
-      referee: 'Tobias Stieler, Germany',
+      referee: 'Tobias Stieler',
       timezone: 'UTC',
       date: '2026-11-11T19:30:00+00:00',
       timestamp: 1794425400,
@@ -1315,10 +1334,10 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
       id: 78,
       name: 'Bundesliga',
       country: 'Germany',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: 'https://media.api-sports.io/football/leagues/78.png',
       flag: 'DE',
       season: 2026,
-      round: 'Regular Season - 11',
+      round: 'Matchweek 11',
     },
     teams: {
       home: {
@@ -1327,7 +1346,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'B04',
         primaryColor: '#EF4444',
         secondaryColor: '#000000',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/168.png',
         winner: null,
       },
       away: {
@@ -1336,7 +1355,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'RBL',
         primaryColor: '#E11D48',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: 'https://media.api-sports.io/football/teams/173.png',
         winner: null,
       },
     },
@@ -1384,7 +1403,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
   },
 
-  // 11. LIVE BASKETBALL (For Live In-Play Multi-Sport Hub)
+  // 11. LIVE BASKETBALL
   {
     sport: 'Basketball',
     liveMeta: {
@@ -1396,7 +1415,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     fixture: {
       id: 209901,
-      referee: 'Scott Foster, NBA',
+      referee: 'Scott Foster',
       timezone: 'UTC',
       date: '2026-11-10T20:00:00+00:00',
       timestamp: 1794340800,
@@ -1406,12 +1425,12 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     league: {
       id: 901,
-      name: 'NBA Regular Season',
+      name: 'NBA',
       country: 'USA',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: '',
       flag: 'US',
       season: 2026,
-      round: 'Western vs Eastern Showcase',
+      round: 'Regular Season',
     },
     teams: {
       home: {
@@ -1420,7 +1439,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'LAL',
         primaryColor: '#A855F7',
         secondaryColor: '#FACC15',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: '',
         winner: true,
       },
       away: {
@@ -1429,7 +1448,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'BOS',
         primaryColor: '#10B981',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: '',
         winner: false,
       },
     },
@@ -1477,7 +1496,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
   },
 
-  // 12. LIVE TENNIS (For Live In-Play Multi-Sport Hub)
+  // 12. LIVE TENNIS
   {
     sport: 'Tennis',
     liveMeta: {
@@ -1489,22 +1508,22 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
     },
     fixture: {
       id: 309902,
-      referee: 'Mohamed Lahyani, ATP',
+      referee: 'Mohamed Lahyani',
       timezone: 'UTC',
       date: '2026-11-10T19:00:00+00:00',
       timestamp: 1794337200,
       periods: { first: 1794337200, second: 1794339900 },
       venue: { id: 9002, name: 'Inalpi Arena', city: 'Turin' },
-      status: { long: 'Set 2 - Tiebreak', short: 'LIVE', elapsed: 92 },
+      status: { long: 'Set 2 Tiebreak', short: 'LIVE', elapsed: 92 },
     },
     league: {
       id: 902,
-      name: 'ATP Finals Turin',
+      name: 'ATP Finals',
       country: 'Italy',
-      logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+      logo: '',
       flag: 'IT',
       season: 2026,
-      round: 'Group Ilie Nastase',
+      round: 'Turin',
     },
     teams: {
       home: {
@@ -1513,7 +1532,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'ALC',
         primaryColor: '#EF4444',
         secondaryColor: '#FACC15',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: '',
         winner: true,
       },
       away: {
@@ -1522,7 +1541,7 @@ export const INITIAL_API_FOOTBALL_FIXTURES: ApiFootballFixture[] = [
         shortCode: 'SIN',
         primaryColor: '#0EA5E9',
         secondaryColor: '#FFFFFF',
-        logo: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        logo: '',
         winner: false,
       },
     },
@@ -1576,45 +1595,132 @@ export const MOCK_OUTRIGHTS: OutrightTournamentMarket[] = [
     id: 5001,
     leagueId: 39,
     leagueName: 'Premier League',
+    leagueLogo: 'https://media.api-sports.io/football/leagues/39.png',
     country: 'England',
     season: '2026/27',
-    title: 'Premier League 2026/27 Outright Winner',
+    title: 'Premier League Winner',
     deadline: 'May 24, 2027',
     favorites: [
-      { teamId: 42, teamName: 'Arsenal', shortCode: 'ARS', primaryColor: '#EF4444', odd: '2.35' },
-      { teamId: 40, teamName: 'Liverpool', shortCode: 'LIV', primaryColor: '#DC2626', odd: '2.80' },
-      { teamId: 50, teamName: 'Manchester City', shortCode: 'MCI', primaryColor: '#38BDF8', odd: '3.10' },
-      { teamId: 49, teamName: 'Chelsea', shortCode: 'CHE', primaryColor: '#2563EB', odd: '11.00' },
+      {
+        teamId: 42,
+        teamName: 'Arsenal',
+        teamLogo: 'https://media.api-sports.io/football/teams/42.png',
+        shortCode: 'ARS',
+        primaryColor: '#EF4444',
+        odd: '2.35',
+      },
+      {
+        teamId: 40,
+        teamName: 'Liverpool',
+        teamLogo: 'https://media.api-sports.io/football/teams/40.png',
+        shortCode: 'LIV',
+        primaryColor: '#DC2626',
+        odd: '2.80',
+      },
+      {
+        teamId: 50,
+        teamName: 'Manchester City',
+        teamLogo: 'https://media.api-sports.io/football/teams/50.png',
+        shortCode: 'MCI',
+        primaryColor: '#38BDF8',
+        odd: '3.10',
+      },
+      {
+        teamId: 49,
+        teamName: 'Chelsea',
+        teamLogo: 'https://media.api-sports.io/football/teams/49.png',
+        shortCode: 'CHE',
+        primaryColor: '#2563EB',
+        odd: '11.00',
+      },
     ],
   },
   {
     id: 5002,
     leagueId: 2,
-    leagueName: 'UEFA Champions League',
+    leagueName: 'Champions League',
+    leagueLogo: 'https://media.api-sports.io/football/leagues/2.png',
     country: 'Europe',
     season: '2026/27',
-    title: 'UEFA Champions League 2026/27 Trophy Winner',
+    title: 'UEFA Champions League Winner',
     deadline: 'May 30, 2027',
     favorites: [
-      { teamId: 541, teamName: 'Real Madrid', shortCode: 'RMA', primaryColor: '#F59E0B', odd: '4.20' },
-      { teamId: 529, teamName: 'FC Barcelona', shortCode: 'BAR', primaryColor: '#3B82F6', odd: '5.50' },
-      { teamId: 157, teamName: 'Bayern Munich', shortCode: 'BAY', primaryColor: '#DC2626', odd: '6.00' },
-      { teamId: 42, teamName: 'Arsenal', shortCode: 'ARS', primaryColor: '#EF4444', odd: '6.50' },
+      {
+        teamId: 541,
+        teamName: 'Real Madrid',
+        teamLogo: 'https://media.api-sports.io/football/teams/541.png',
+        shortCode: 'RMA',
+        primaryColor: '#F59E0B',
+        odd: '4.20',
+      },
+      {
+        teamId: 529,
+        teamName: 'FC Barcelona',
+        teamLogo: 'https://media.api-sports.io/football/teams/529.png',
+        shortCode: 'BAR',
+        primaryColor: '#3B82F6',
+        odd: '5.50',
+      },
+      {
+        teamId: 157,
+        teamName: 'Bayern Munich',
+        teamLogo: 'https://media.api-sports.io/football/teams/157.png',
+        shortCode: 'BAY',
+        primaryColor: '#DC2626',
+        odd: '6.00',
+      },
+      {
+        teamId: 42,
+        teamName: 'Arsenal',
+        teamLogo: 'https://media.api-sports.io/football/teams/42.png',
+        shortCode: 'ARS',
+        primaryColor: '#EF4444',
+        odd: '6.50',
+      },
     ],
   },
   {
     id: 5003,
     leagueId: 140,
     leagueName: 'La Liga',
+    leagueLogo: 'https://media.api-sports.io/football/leagues/140.png',
     country: 'Spain',
     season: '2026/27',
-    title: 'La Liga 2026/27 Champion',
+    title: 'La Liga Winner',
     deadline: 'May 23, 2027',
     favorites: [
-      { teamId: 529, teamName: 'FC Barcelona', shortCode: 'BAR', primaryColor: '#3B82F6', odd: '1.78' },
-      { teamId: 541, teamName: 'Real Madrid', shortCode: 'RMA', primaryColor: '#F59E0B', odd: '2.15' },
-      { teamId: 530, teamName: 'Atlético Madrid', shortCode: 'ATM', primaryColor: '#EF4444', odd: '12.00' },
-      { teamId: 531, teamName: 'Athletic Club', shortCode: 'ATH', primaryColor: '#DC2626', odd: '34.00' },
+      {
+        teamId: 529,
+        teamName: 'FC Barcelona',
+        teamLogo: 'https://media.api-sports.io/football/teams/529.png',
+        shortCode: 'BAR',
+        primaryColor: '#3B82F6',
+        odd: '1.78',
+      },
+      {
+        teamId: 541,
+        teamName: 'Real Madrid',
+        teamLogo: 'https://media.api-sports.io/football/teams/541.png',
+        shortCode: 'RMA',
+        primaryColor: '#F59E0B',
+        odd: '2.15',
+      },
+      {
+        teamId: 530,
+        teamName: 'Atlético Madrid',
+        teamLogo: 'https://media.api-sports.io/football/teams/530.png',
+        shortCode: 'ATM',
+        primaryColor: '#EF4444',
+        odd: '12.00',
+      },
+      {
+        teamId: 531,
+        teamName: 'Athletic Club',
+        teamLogo: 'https://media.api-sports.io/football/teams/531.png',
+        shortCode: 'ATH',
+        primaryColor: '#DC2626',
+        odd: '34.00',
+      },
     ],
   },
 ];

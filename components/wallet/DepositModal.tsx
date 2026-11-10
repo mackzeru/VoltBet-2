@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Camera,
+  ArrowDownLeft,
+  ArrowUpRight,
 } from 'lucide-react';
 import { PaymentMethodType } from '@/types/api-football';
 import { useWallet } from '@/context/WalletContext';
@@ -20,49 +22,50 @@ interface PaymentMethodDetails {
   shortLabel: string;
   accountName: string;
   accountNumber: string;
-  networkNote: string;
 }
 
 const PAYMENT_METHODS: PaymentMethodDetails[] = [
   {
     method: 'Telebirr',
     shortLabel: 'Telebirr',
-    accountName: 'VoltBet Entertainment PLC',
-    accountNumber: '+251 911 248 900 (Merchant ID: 884920)',
-    networkNote: 'Instant mobile money transfer via Ethio Telecom Telebirr SuperApp.',
+    accountName: 'VoltBet PLC',
+    accountNumber: '+251 911 248 900 (ID: 884920)',
   },
   {
     method: 'Commercial Bank of Ethiopia (CBE Birr)',
     shortLabel: 'CBE Birr',
-    accountName: 'VoltBet Sports Trading PLC',
+    accountName: 'VoltBet Sports PLC',
     accountNumber: '1000482910482',
-    networkNote: 'Transfer via CBE Mobile Banking or CBE Birr agent and upload screenshot.',
   },
   {
     method: 'Bank Transfer',
     shortLabel: 'Bank Transfer',
-    accountName: 'VoltBet Ethiopia Escrow Account (Awash / Abyssinia)',
+    accountName: 'VoltBet Escrow (Awash / Abyssinia)',
     accountNumber: '01320948102900',
-    networkNote: 'Supports RTGS & instant inter-bank transfers across all Ethiopian banks.',
   },
   {
     method: 'USDT (TRC-20)',
     shortLabel: 'USDT (TRC-20)',
-    accountName: 'VoltBet TRON Treasury Vault',
+    accountName: 'VoltBet TRON Vault',
     accountNumber: 'TVoLt98xK2pLmN4qR7sW1yZ3bC6vB8nM2Q',
-    networkNote: 'Send only USDT on TRON (TRC-20). Auto-converted to ETB at 128.50 ETB / USDT.',
   },
 ];
 
 const AMOUNT_PRESETS = [500, 1000, 5000, 15000, 50000];
 
 export function DepositFormPanel() {
-  const { submitDeposit } = useWallet();
+  const { balance, userProfile, submitDeposit, submitWithdrawal } = useWallet();
   const { hapticImpact } = useTelegram();
 
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodDetails>(PAYMENT_METHODS[0]);
+  const [mode, setMode] = useState<'deposit' | 'withdraw'>('deposit');
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodDetails>(
+    PAYMENT_METHODS[0]
+  );
   const [amount, setAmount] = useState<number>(5000);
   const [referenceCode, setReferenceCode] = useState<string>('');
+  const [destinationAccount, setDestinationAccount] = useState<string>(
+    userProfile.phone
+  );
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const [fileName, setFileName] = useState<string>('');
@@ -70,7 +73,7 @@ export function DepositFormPanel() {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [fileError, setFileError] = useState<string | null>(null);
-  const [submittedTicketId, setSubmittedTicketId] = useState<string | null>(null);
+  const [successNotice, setSuccessNotice] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -85,22 +88,17 @@ export function DepositFormPanel() {
 
   const simulateFileProcessing = (name: string, dataUrl: string) => {
     setFileError(null);
-    setSubmittedTicketId(null);
+    setSuccessNotice(null);
     setIsUploading(true);
-    setUploadProgress(15);
+    setUploadProgress(20);
 
-    const step1 = setTimeout(() => setUploadProgress(65), 180);
-    const step2 = setTimeout(() => {
+    setTimeout(() => setUploadProgress(70), 150);
+    setTimeout(() => {
       setUploadProgress(100);
       setIsUploading(false);
       setFileName(name);
       setPreviewUrl(dataUrl);
-    }, 420);
-
-    return () => {
-      clearTimeout(step1);
-      clearTimeout(step2);
-    };
+    }, 350);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +106,7 @@ export function DepositFormPanel() {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setFileError('Please select a valid image file (PNG, JPG, WEBP).');
+      setFileError('Select a valid image file (PNG, JPG, WEBP).');
       return;
     }
 
@@ -135,83 +133,125 @@ export function DepositFormPanel() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFileError(null);
+    setSuccessNotice(null);
 
     if (amount <= 0) {
-      setFileError('Please enter a deposit amount greater than 0 ETB.');
+      setFileError('Enter an amount greater than 0 ETB.');
+      return;
+    }
+
+    if (mode === 'withdraw') {
+      const res = submitWithdrawal({
+        method: selectedMethod.method,
+        amount,
+        destinationAccount: destinationAccount || userProfile.phone,
+      });
+      if (!res.success) {
+        setFileError(res.error || 'Withdrawal failed.');
+      } else if (res.tx) {
+        setSuccessNotice(
+          `Withdrawal ${res.tx.id} (${amount.toLocaleString()} ETB) processed to ${selectedMethod.shortLabel}!`
+        );
+      }
       return;
     }
 
     if (!previewUrl) {
-      setFileError('Please upload a payment screenshot or click "Use Sample Receipt" to test.');
+      setFileError('Upload a screenshot or click "Use Sample Receipt".');
       return;
     }
 
     const created = submitDeposit({
       method: selectedMethod.method,
       amount,
-      referenceCode: referenceCode || `REF-${Math.floor(100000 + Math.random() * 900000)}`,
+      referenceCode:
+        referenceCode || `REF-${Math.floor(100000 + Math.random() * 900000)}`,
       screenshotFileName: fileName || 'payment_receipt.jpg',
       screenshotPreviewUrl: previewUrl,
     });
 
-    setSubmittedTicketId(created.id);
+    setSuccessNotice(
+      `Deposit ${created.id} submitted as PENDING. Approve it in the table below.`
+    );
     setReferenceCode('');
   };
 
   return (
-    <div className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 sm:p-6 space-y-5">
-      <div>
-        <h2 className="font-display text-lg font-bold text-white">
-          Screenshot Deposit Settlement
-        </h2>
-        <p className="text-xs text-[#94A3B8] mt-0.5">
-          Select your preferred Ethiopian or crypto rail, transfer your ETB amount, and upload your screenshot receipt for instant verification.
-        </p>
-      </div>
-
-      {/* 1. Payment Method Selector */}
-      <div className="space-y-2">
-        <label className="block text-xs font-semibold text-[#94A3B8]">
-          1. Select Payment Method
-        </label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {PAYMENT_METHODS.map((pm) => {
-            const active = pm.method === selectedMethod.method;
-            return (
-              <button
-                key={pm.method}
-                type="button"
-                onClick={() => {
-                  hapticImpact('light');
-                  setSelectedMethod(pm);
-                  setSubmittedTicketId(null);
-                }}
-                className={`min-h-[44px] px-3 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left flex items-center justify-between ${
-                  active
-                    ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold shadow-[0_0_16px_rgba(0,230,118,0.2)]'
-                    : 'bg-[#121721] border-[#2A344B] text-white hover:border-[#00E676]/40'
-                }`}
-              >
-                <span className="truncate">{pm.shortLabel}</span>
-              </button>
-            );
-          })}
+    <div className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 sm:p-5 space-y-4">
+      {/* Deposit vs Withdraw Segmented Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#2A344B]">
+        <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#0B0E14] border border-[#2A344B] w-full sm:w-72">
+          <button
+            type="button"
+            onClick={() => {
+              setMode('deposit');
+              setFileError(null);
+              setSuccessNotice(null);
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer ${
+              mode === 'deposit'
+                ? 'bg-[#00E676] text-[#0B0E14] font-bold'
+                : 'text-[#94A3B8] hover:text-white'
+            }`}
+          >
+            <ArrowDownLeft className="w-3.5 h-3.5" />
+            <span>Deposit ETB</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMode('withdraw');
+              setFileError(null);
+              setSuccessNotice(null);
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer ${
+              mode === 'withdraw'
+                ? 'bg-[#00E676] text-[#0B0E14] font-bold'
+                : 'text-[#94A3B8] hover:text-white'
+            }`}
+          >
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>Withdraw ETB</span>
+          </button>
         </div>
+
+        <span className="text-xs font-mono tabular-nums text-[#94A3B8]">
+          Available: <strong className="text-white">{balance.toLocaleString('en-US', { minimumFractionDigits: 2 })} ETB</strong>
+        </span>
       </div>
 
-      {/* 2. Payment Instructions Card & QR Code */}
-      <div className="rounded-xl bg-[#121721] border border-[#2A344B] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="space-y-2.5 flex-1 min-w-0 w-full">
-          <div className="text-xs text-[#94A3B8]">
-            <span>{selectedMethod.method}</span>
-            <span aria-hidden="true"> · </span>
-            <span className="text-[#00E676]">Verified Merchant</span>
-          </div>
+      {/* Payment Rail Selector */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {PAYMENT_METHODS.map((pm) => {
+          const active = pm.method === selectedMethod.method;
+          return (
+            <button
+              key={pm.method}
+              type="button"
+              onClick={() => {
+                hapticImpact('light');
+                setSelectedMethod(pm);
+                setSuccessNotice(null);
+              }}
+              className={`min-h-[42px] px-3 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left flex items-center justify-between ${
+                active
+                  ? 'bg-[#00E676] border-[#00E676] text-[#0B0E14] font-bold'
+                  : 'bg-[#121721] border-[#2A344B] text-white hover:border-[#00E676]/40'
+              }`}
+            >
+              <span className="truncate">{pm.shortLabel}</span>
+            </button>
+          );
+        })}
+      </div>
 
-          <div className="space-y-1.5">
+      {/* Merchant Details & QR (Only shown in Deposit mode) */}
+      {mode === 'deposit' && (
+        <div className="rounded-xl bg-[#121721] border border-[#2A344B] p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="space-y-2 flex-1 min-w-0 w-full">
             <div className="flex items-center justify-between gap-2 rounded-lg bg-[#0B0E14] border border-[#2A344B] px-3 py-2">
               <div className="min-w-0">
-                <span className="block text-[10px] text-[#94A3B8]">Account / Merchant Name</span>
+                <span className="block text-[10px] text-[#94A3B8]">Merchant</span>
                 <span className="text-xs font-semibold text-white truncate block">
                   {selectedMethod.accountName}
                 </span>
@@ -219,18 +259,12 @@ export function DepositFormPanel() {
               <button
                 type="button"
                 onClick={() => handleCopy(selectedMethod.accountName, 'name')}
-                className="px-2.5 py-1 rounded-md bg-[#1E2638] hover:bg-[#2A344B] text-xs font-medium text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
+                className="px-2.5 py-1 rounded-md bg-[#1E2638] text-xs font-medium text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 {copiedField === 'name' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-[#00E676]" />
-                    <span className="text-[#00E676]">Copied</span>
-                  </>
+                  <Check className="w-3.5 h-3.5 text-[#00E676]" />
                 ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5 text-[#94A3B8]" />
-                    <span>Copy</span>
-                  </>
+                  <Copy className="w-3.5 h-3.5 text-[#94A3B8]" />
                 )}
               </button>
             </div>
@@ -238,7 +272,7 @@ export function DepositFormPanel() {
             <div className="flex items-center justify-between gap-2 rounded-lg bg-[#0B0E14] border border-[#2A344B] px-3 py-2">
               <div className="min-w-0">
                 <span className="block text-[10px] text-[#94A3B8]">
-                  Account Number / IBAN / Address
+                  Account / Address
                 </span>
                 <span className="font-mono tabular-nums text-xs font-bold text-[#00E676] truncate block">
                   {selectedMethod.accountNumber}
@@ -247,42 +281,29 @@ export function DepositFormPanel() {
               <button
                 type="button"
                 onClick={() => handleCopy(selectedMethod.accountNumber, 'number')}
-                className="px-2.5 py-1 rounded-md bg-[#1E2638] hover:bg-[#2A344B] text-xs font-medium text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
+                className="px-2.5 py-1 rounded-md bg-[#1E2638] text-xs font-medium text-white inline-flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 {copiedField === 'number' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-[#00E676]" />
-                    <span className="text-[#00E676]">Copied</span>
-                  </>
+                  <Check className="w-3.5 h-3.5 text-[#00E676]" />
                 ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5 text-[#94A3B8]" />
-                    <span>Copy</span>
-                  </>
+                  <Copy className="w-3.5 h-3.5 text-[#94A3B8]" />
                 )}
               </button>
             </div>
           </div>
 
-          <p className="text-[11px] text-[#94A3B8]">{selectedMethod.networkNote}</p>
+          <div className="w-24 h-24 rounded-xl bg-white p-1.5 flex flex-col items-center justify-center shrink-0 self-center sm:self-auto">
+            <QrCode className="w-16 h-16 text-[#0B0E14]" strokeWidth={1.5} />
+            <span className="text-[8px] font-mono font-bold text-[#0B0E14]">
+              SCAN QR
+            </span>
+          </div>
         </div>
+      )}
 
-        {/* Simulated Merchant QR Code Box */}
-        <div className="w-28 h-28 rounded-xl bg-white p-2 flex flex-col items-center justify-center shrink-0 self-center sm:self-auto border border-[#2A344B]">
-          <QrCode className="w-20 h-20 text-[#0B0E14]" strokeWidth={1.5} />
-          <span className="text-[9px] font-mono font-bold text-[#0B0E14] uppercase">
-            SCAN TO PAY
-          </span>
-        </div>
-      </div>
-
-      {/* 3. Deposit Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Amount Input + Quick Presets */}
+      {/* Form Fields */}
+      <form onSubmit={handleSubmit} className="space-y-3.5">
         <div className="space-y-2">
-          <label className="block text-xs font-semibold text-[#94A3B8]">
-            2. Deposit Amount (ETB)
-          </label>
           <div className="relative">
             <input
               type="number"
@@ -291,7 +312,7 @@ export function DepositFormPanel() {
               value={amount || ''}
               onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
               className="w-full h-11 px-3.5 pr-16 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono tabular-nums text-sm font-bold text-white"
-              placeholder="Enter amount in ETB"
+              placeholder="Amount in ETB"
             />
             <span className="absolute right-3.5 top-1/2 -translate-y-1/2 font-mono text-xs font-bold text-[#00E676]">
               ETB
@@ -310,139 +331,128 @@ export function DepositFormPanel() {
                     : 'bg-[#121721] border-[#2A344B] text-[#94A3B8] hover:text-white'
                 }`}
               >
-                {preset.toLocaleString()} ETB
+                {preset.toLocaleString()}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Screenshot / Receipt Upload Drag-and-Drop Zone */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label className="block text-xs font-semibold text-[#94A3B8]">
-              3. Upload Transfer Screenshot / Receipt
+        {mode === 'withdraw' ? (
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-[#94A3B8]">
+              Destination {selectedMethod.shortLabel} Account / Phone
             </label>
-            <button
-              type="button"
-              onClick={handleSimulateSampleReceipt}
-              className="text-xs font-semibold text-[#00E676] hover:underline inline-flex items-center gap-1 cursor-pointer"
-            >
-              <Camera className="w-3.5 h-3.5" />
-              <span>Use Sample Receipt</span>
-            </button>
+            <input
+              type="text"
+              value={destinationAccount}
+              onChange={(e) => setDestinationAccount(e.target.value)}
+              placeholder="+251 911 248 900 or Account Number"
+              className="w-full h-11 px-3.5 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-white"
+            />
           </div>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              const droppedFile = e.dataTransfer.files?.[0];
-              if (droppedFile && droppedFile.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                  if (typeof reader.result === 'string') {
-                    simulateFileProcessing(droppedFile.name, reader.result);
-                  }
-                };
-                reader.readAsDataURL(droppedFile);
-              }
-            }}
-            className="rounded-xl border border-dashed border-[#2A344B] hover:border-[#00E676]/60 bg-[#121721] p-4 text-center cursor-pointer transition-colors"
-          >
-            {isUploading ? (
-              <div className="py-4 space-y-2">
-                <p className="text-xs font-semibold text-white">
-                  Validating Receipt Image... ({uploadProgress}%)
-                </p>
-                <div className="w-full max-w-xs mx-auto h-2 rounded-full bg-[#0B0E14] overflow-hidden">
-                  <div
-                    className="h-full bg-[#00E676] transition-all duration-150"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
+        ) : (
+          <>
+            {/* Screenshot Upload */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-[#94A3B8]">
+                  Payment Receipt Screenshot
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSimulateSampleReceipt}
+                  className="text-xs font-semibold text-[#00E676] hover:underline inline-flex items-center gap-1 cursor-pointer"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>Use Sample Receipt</span>
+                </button>
               </div>
-            ) : previewUrl ? (
-              <div className="flex items-center justify-between gap-3 text-left">
-                <div className="flex items-center gap-3 min-w-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={previewUrl}
-                    alt="Receipt preview"
-                    referrerPolicy="no-referrer"
-                    className="w-14 h-14 rounded-lg object-cover border border-[#00E676]/50 shrink-0"
-                  />
-                  <div className="min-w-0">
-                    <div className="inline-flex items-center gap-1 text-xs font-bold text-[#00E676]">
-                      <FileCheck2 className="w-4 h-4 shrink-0" />
-                      <span>Receipt Verified & Ready</span>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="rounded-xl border border-dashed border-[#2A344B] hover:border-[#00E676]/60 bg-[#121721] p-3.5 text-center cursor-pointer transition-colors"
+              >
+                {isUploading ? (
+                  <div className="py-2 space-y-1.5">
+                    <p className="text-xs font-semibold text-white">
+                      Uploading... {uploadProgress}%
+                    </p>
+                    <div className="w-48 mx-auto h-1.5 rounded-full bg-[#0B0E14] overflow-hidden">
+                      <div
+                        className="h-full bg-[#00E676]"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
                     </div>
-                    <p className="text-xs text-white truncate mt-0.5">{fileName}</p>
-                    <p className="text-[11px] text-[#94A3B8]">
-                      Click to replace screenshot image
+                  </div>
+                ) : previewUrl ? (
+                  <div className="flex items-center gap-3 text-left">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={previewUrl}
+                      alt="Receipt preview"
+                      referrerPolicy="no-referrer"
+                      className="w-12 h-12 rounded-lg object-cover border border-[#00E676]/50 shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <div className="inline-flex items-center gap-1 text-xs font-bold text-[#00E676]">
+                        <FileCheck2 className="w-3.5 h-3.5 shrink-0" />
+                        <span>Receipt Attached</span>
+                      </div>
+                      <p className="text-xs text-white truncate">{fileName}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-2 space-y-1">
+                    <UploadCloud className="w-6 h-6 text-[#00E676] mx-auto" />
+                    <p className="text-xs font-semibold text-white">
+                      Upload Receipt Screenshot
                     </p>
                   </div>
-                </div>
+                )}
               </div>
-            ) : (
-              <div className="py-3 space-y-1.5">
-                <UploadCloud className="w-7 h-7 text-[#00E676] mx-auto" />
-                <p className="text-xs font-semibold text-white">
-                  Tap to Capture or Drop Payment Screenshot Here
-                </p>
-                <p className="text-[11px] text-[#94A3B8]">
-                  Supports JPG, PNG, WEBP up to 10MB · Or click &ldquo;Use Sample Receipt&rdquo; above
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+            </div>
 
-        {/* Optional Transaction Reference Input */}
-        <div className="space-y-1.5">
-          <label className="block text-xs font-semibold text-[#94A3B8]">
-            4. Bank / Telebirr Transaction Reference Code (Optional)
-          </label>
-          <input
-            type="text"
-            value={referenceCode}
-            onChange={(e) => setReferenceCode(e.target.value)}
-            placeholder="e.g. FT2631398001 or TB99481023ET"
-            className="w-full h-11 px-3.5 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-white"
-          />
-        </div>
+            <input
+              type="text"
+              value={referenceCode}
+              onChange={(e) => setReferenceCode(e.target.value)}
+              placeholder="Transaction Reference Code (Optional)"
+              className="w-full h-10 px-3.5 rounded-xl bg-[#0B0E14] border border-[#2A344B] focus:border-[#00E676] focus:outline-none font-mono text-xs text-white"
+            />
+          </>
+        )}
 
         {fileError && (
-          <div className="rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 p-3 flex items-center gap-2 text-xs text-[#EF4444]">
+          <div className="rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 p-2.5 flex items-center gap-2 text-xs text-[#EF4444]">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{fileError}</span>
           </div>
         )}
 
-        {submittedTicketId && (
-          <div className="rounded-xl bg-[#00E676]/15 border border-[#00E676]/40 p-3 flex items-center justify-between gap-2 text-xs text-[#00E676]">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>
-                Deposit Ticket <strong className="font-mono">{submittedTicketId}</strong> created as PENDING! Use the Admin Simulator in the table below to approve it immediately.
-              </span>
-            </div>
+        {successNotice && (
+          <div className="rounded-xl bg-[#00E676]/15 border border-[#00E676]/40 p-2.5 flex items-center gap-2 text-xs text-[#00E676]">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span>{successNotice}</span>
           </div>
         )}
 
         <button
           type="submit"
-          className="w-full min-h-[48px] rounded-xl bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14] font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,230,118,0.2)] transition-all cursor-pointer"
+          className="w-full min-h-[46px] rounded-xl bg-[#00E676] hover:bg-[#00C853] text-[#0B0E14] font-bold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all"
         >
-          <span>Submit Deposit Ticket ({amount.toLocaleString()} ETB)</span>
+          <span>
+            {mode === 'deposit'
+              ? `Submit Deposit · ${amount.toLocaleString()} ETB`
+              : `Withdraw Now · ${amount.toLocaleString()} ETB`}
+          </span>
         </button>
       </form>
     </div>

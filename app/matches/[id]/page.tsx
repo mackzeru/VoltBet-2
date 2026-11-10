@@ -7,8 +7,6 @@ import {
   ArrowLeft,
   Clock,
   MapPin,
-  UserCheck,
-  Activity,
   BarChart3,
   Zap,
   Lock,
@@ -71,11 +69,11 @@ export default function MatchDetailsPage() {
       key: string;
       label: string;
     }> = [
-      { key: 'Ball Possession', label: 'Possession %' },
+      { key: 'Ball Possession', label: 'Possession' },
       { key: 'Total Shots', label: 'Total Shots' },
       { key: 'Shots on Goal', label: 'Shots on Target' },
-      { key: 'Corner Kicks', label: 'Corner Kicks' },
-      { key: 'Fouls', label: 'Fouls Committed' },
+      { key: 'Corner Kicks', label: 'Corners' },
+      { key: 'Fouls', label: 'Fouls' },
       { key: 'Yellow Cards', label: 'Yellow Cards' },
       { key: 'Red Cards', label: 'Red Cards' },
     ];
@@ -98,32 +96,32 @@ export default function MatchDetailsPage() {
   }, [fixture.statistics]);
 
   const categories: Array<{ id: MarketCategoryTab; label: string }> = [
-    { id: 'all', label: 'All Markets' },
-    { id: 'main', label: 'Main (1X2, Double Chance)' },
-    { id: 'goals', label: 'Goals (O/U, BTTS)' },
+    { id: 'all', label: 'All' },
+    { id: 'main', label: 'Main' },
+    { id: 'goals', label: 'Goals' },
     { id: 'oddeven', label: 'Odd/Even' },
-    { id: 'cards', label: 'Cards & Discipline' },
+    { id: 'cards', label: 'Cards' },
     { id: 'penalties', label: 'Penalties' },
     { id: 'halves', label: 'Halves' },
   ];
 
   return (
-    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 space-y-5">
-      {/* Top Breadcrumb & Quick Simulation Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 space-y-4">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between gap-2">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#94A3B8] hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#94A3B8] hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Sportsbook Lobby</span>
+          <span>Lobby</span>
         </Link>
 
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={triggerManualOddsDrift}
-            className="min-h-[36px] px-3 py-1.5 rounded-xl bg-[#121721] hover:bg-[#1E2638] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1.5 cursor-pointer"
+            className="min-h-[34px] px-3 py-1 rounded-xl bg-[#121721] hover:bg-[#1E2638] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1 cursor-pointer"
           >
             <Zap className="w-3.5 h-3.5 text-[#00E676]" />
             <span>Pulse Odds</span>
@@ -132,61 +130,55 @@ export default function MatchDetailsPage() {
             <button
               type="button"
               onClick={toggleRandomMarketLock}
-              className="min-h-[36px] px-3 py-1.5 rounded-xl bg-[#121721] hover:bg-[#1E2638] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1.5 cursor-pointer"
+              className="min-h-[34px] px-3 py-1 rounded-xl bg-[#121721] hover:bg-[#1E2638] border border-[#2A344B] text-xs font-semibold text-white inline-flex items-center gap-1 cursor-pointer"
             >
               <Lock className="w-3.5 h-3.5 text-amber-400" />
-              <span>{isLocked ? 'Unlock Markets' : 'Simulate VAR Lock'}</span>
+              <span>{isLocked ? 'Unlock' : 'VAR Lock'}</span>
             </button>
           )}
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row items-start gap-6">
-        {/* Main Match Detail Column */}
-        <div className="w-full flex-1 min-w-0 space-y-5">
+        <div className="w-full flex-1 min-w-0 space-y-4">
           {/* Scoreboard Header Billboard */}
-          <section className="rounded-2xl bg-gradient-to-b from-[#1A2232] to-[#1E2638] border border-[#2A344B] p-4 sm:p-6 space-y-5">
-            {/* Metadata Line */}
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#94A3B8]">
-              <div className="flex flex-wrap items-center gap-1.5">
+          <section className="rounded-2xl bg-gradient-to-b from-[#1A2232] to-[#1E2638] border border-[#2A344B] p-4 sm:p-5 space-y-4">
+            <div className="flex items-center justify-between gap-2 text-xs text-[#94A3B8]">
+              <div className="flex items-center gap-2">
+                {fixture.league.logo && (
+                  <TeamCrest
+                    name={fixture.league.name}
+                    logo={fixture.league.logo}
+                    size="xs"
+                  />
+                )}
                 <span className="font-semibold text-white">{fixture.league.name}</span>
-                <span aria-hidden="true">·</span>
-                <span>{fixture.league.country}</span>
                 <span aria-hidden="true">·</span>
                 <span>{fixture.league.round}</span>
               </div>
 
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#00E676]" />
-                  <span>
-                    {fixture.fixture.venue.name}, {fixture.fixture.venue.city}
-                  </span>
-                </span>
-                <span className="hidden sm:inline-flex items-center gap-1">
-                  <UserCheck className="w-3.5 h-3.5 text-[#94A3B8]" />
-                  <span>{fixture.fixture.referee}</span>
-                </span>
-              </div>
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5 text-[#00E676]" />
+                <span>{fixture.fixture.venue.name}</span>
+              </span>
             </div>
 
-            {/* Scoreboard Teams & Scoreline */}
-            <div className="grid grid-cols-3 items-center gap-2 sm:gap-4 py-2">
-              {/* Home Team */}
+            <div className="grid grid-cols-3 items-center gap-2 sm:gap-4 py-1">
               <div className="flex flex-col items-center text-center gap-2">
                 <TeamCrest
                   name={fixture.teams.home.name}
+                  logo={fixture.teams.home.logo}
                   shortCode={fixture.teams.home.shortCode}
                   primaryColor={fixture.teams.home.primaryColor}
+                  secondaryColor={fixture.teams.home.secondaryColor}
                   size="lg"
                 />
-                <h1 className="font-display text-sm sm:text-lg font-bold text-white leading-tight">
+                <h1 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
                   {fixture.teams.home.name}
                 </h1>
               </div>
 
-              {/* Center Score & Clock */}
-              <div className="flex flex-col items-center justify-center text-center space-y-1.5">
+              <div className="flex flex-col items-center justify-center text-center space-y-1">
                 {isLive ? (
                   <>
                     <div className="inline-flex items-center gap-1.5 text-xs font-mono tabular-nums font-bold text-[#EF4444]">
@@ -202,8 +194,8 @@ export default function MatchDetailsPage() {
                       {fixture.goals.away ?? 0}
                     </div>
                     {fixture.score.halftime.home !== null && (
-                      <span className="text-xs font-mono tabular-nums text-[#94A3B8]">
-                        HT: {fixture.score.halftime.home} - {fixture.score.halftime.away}
+                      <span className="text-[11px] font-mono tabular-nums text-[#94A3B8]">
+                        HT {fixture.score.halftime.home}-{fixture.score.halftime.away}
                       </span>
                     )}
                   </>
@@ -211,7 +203,7 @@ export default function MatchDetailsPage() {
                   <>
                     <span className="inline-flex items-center gap-1 text-xs font-mono text-[#00E676]">
                       <Clock className="w-3.5 h-3.5" />
-                      <span>Pre-Match Kickoff</span>
+                      <span>Kickoff</span>
                     </span>
                     <div className="font-mono tabular-nums text-xl sm:text-2xl font-bold text-white">
                       {new Date(fixture.fixture.date).toLocaleTimeString([], {
@@ -219,66 +211,47 @@ export default function MatchDetailsPage() {
                         minute: '2-digit',
                       })}
                     </div>
-                    <span className="text-xs text-[#94A3B8]">
-                      {new Date(fixture.fixture.date).toLocaleDateString([], {
-                        month: 'short',
-                        day: 'numeric',
-                      })}
-                    </span>
                   </>
                 )}
               </div>
 
-              {/* Away Team */}
               <div className="flex flex-col items-center text-center gap-2">
                 <TeamCrest
                   name={fixture.teams.away.name}
+                  logo={fixture.teams.away.logo}
                   shortCode={fixture.teams.away.shortCode}
                   primaryColor={fixture.teams.away.primaryColor}
+                  secondaryColor={fixture.teams.away.secondaryColor}
                   size="lg"
                 />
-                <h2 className="font-display text-sm sm:text-lg font-bold text-white leading-tight">
+                <h2 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
                   {fixture.teams.away.name}
                 </h2>
               </div>
             </div>
 
-            {/* Live Match Event Ticker (Goals, Cards, Substitutions) */}
             {fixture.events && fixture.events.length > 0 && (
-              <div className="pt-4 border-t border-[#2A344B] space-y-2.5">
-                <div className="flex items-center justify-between text-xs text-[#94A3B8]">
-                  <span className="inline-flex items-center gap-1.5 font-semibold text-white">
-                    <Activity className="w-3.5 h-3.5 text-[#00E676]" />
-                    <span>Chronological Match Event Ticker</span>
-                  </span>
-                  <span className="font-mono">{fixture.events.length} Events</span>
-                </div>
-
-                <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-1">
+              <div className="pt-3 border-t border-[#2A344B]">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
                   {fixture.events.map((ev, index) => (
                     <div
                       key={`${ev.time.elapsed}-${index}`}
-                      className="rounded-xl bg-[#121721] border border-[#2A344B] px-3 py-2 shrink-0 flex items-center gap-2 text-xs"
+                      className="rounded-xl bg-[#121721] border border-[#2A344B] px-2.5 py-1.5 shrink-0 flex items-center gap-2 text-xs"
                     >
                       <span className="font-mono tabular-nums font-bold text-[#00E676]">
                         {ev.time.elapsed}&apos;
                       </span>
-                      <span
-                        className={`w-2 h-2 rounded-full shrink-0 ${
-                          ev.type === 'Goal'
-                            ? 'bg-[#00E676]'
-                            : ev.detail === 'Red Card'
-                            ? 'bg-[#EF4444]'
-                            : 'bg-amber-400'
-                        }`}
+                      <TeamCrest
+                        name={ev.team.name}
+                        logo={ev.team.logo}
+                        size="xs"
                       />
-                      <div>
-                        <span className="font-semibold text-white">{ev.player.name}</span>
-                        <span className="text-[#94A3B8]">
-                          {' '}
-                          · {ev.detail} ({ev.team.name})
-                        </span>
-                      </div>
+                      <span className="font-semibold text-white">
+                        {ev.player.name}
+                      </span>
+                      <span className="text-[#94A3B8] text-[11px]">
+                        {ev.detail}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -288,21 +261,20 @@ export default function MatchDetailsPage() {
 
           {/* Match Statistics Visualizer */}
           {statRows.length > 0 && (
-            <section className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 sm:p-5 space-y-4">
+            <section className="rounded-2xl bg-[#1E2638] border border-[#2A344B] p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-[#00E676]" />
-                  <h2 className="font-display text-sm sm:text-base font-bold text-white">
-                    Match Statistics Comparison
+                  <h2 className="font-display text-sm font-bold text-white">
+                    Match Stats
                   </h2>
                 </div>
-                <div className="text-xs text-[#94A3B8] font-mono">
-                  {fixture.teams.home.shortCode || 'HOME'} vs{' '}
-                  {fixture.teams.away.shortCode || 'AWAY'}
-                </div>
+                <span className="text-xs text-[#94A3B8] font-mono">
+                  {fixture.teams.home.shortCode} vs {fixture.teams.away.shortCode}
+                </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
                 {statRows.map((row) => (
                   <div key={row.label} className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
@@ -314,13 +286,13 @@ export default function MatchDetailsPage() {
                         {row.awayDisplay}
                       </span>
                     </div>
-                    <div className="h-2 rounded-full bg-[#121721] overflow-hidden flex">
+                    <div className="h-1.5 rounded-full bg-[#121721] overflow-hidden flex">
                       <div
-                        className="h-full bg-[#00E676] transition-all duration-300"
+                        className="h-full bg-[#00E676]"
                         style={{ width: `${row.homePct}%` }}
                       />
                       <div
-                        className="h-full bg-[#38BDF8] transition-all duration-300"
+                        className="h-full bg-[#38BDF8]"
                         style={{ width: `${row.awayPct}%` }}
                       />
                     </div>
@@ -331,13 +303,13 @@ export default function MatchDetailsPage() {
           )}
 
           {/* Categorized Market Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar p-1 rounded-xl bg-[#121721] border border-[#2A344B]">
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-xl bg-[#121721] border border-[#2A344B]">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
                 onClick={() => setActiveCategory(cat.id)}
-                className={`min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                className={`min-h-[36px] px-3.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   activeCategory === cat.id
                     ? 'bg-[#00E676] text-[#0B0E14] font-bold'
                     : 'text-[#94A3B8] hover:text-white'
@@ -349,7 +321,7 @@ export default function MatchDetailsPage() {
           </div>
 
           {/* Collapsible Odds Matrix Blocks */}
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             {filteredMarkets.map((market) => (
               <MarketAccordion
                 key={market.id}
@@ -365,7 +337,6 @@ export default function MatchDetailsPage() {
           </div>
         </div>
 
-        {/* Persistent Universal Bet Slip */}
         <BetSlipDrawer />
       </div>
     </main>

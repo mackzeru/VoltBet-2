@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Trophy, Radio, Receipt, Wallet } from 'lucide-react';
+import { Trophy, Radio, Receipt, Wallet, User } from 'lucide-react';
 import { useBetSlip } from '@/context/BetSlipContext';
 import { useWallet } from '@/context/WalletContext';
 
@@ -25,7 +25,7 @@ export function BottomNav() {
     },
     {
       href: '/live',
-      label: 'Live In-Play',
+      label: 'Live',
       icon: Radio,
       active: pathname.startsWith('/live'),
       badge: 'LIVE',
@@ -44,10 +44,17 @@ export function BottomNav() {
       active: pathname.startsWith('/wallet'),
       badge: pendingDeposits > 0 ? String(pendingDeposits) : null,
     },
+    {
+      href: '/profile',
+      label: 'Profile',
+      icon: User,
+      active: pathname.startsWith('/profile'),
+      badge: null,
+    },
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-15 bg-[#0B0E14]/95 backdrop-blur-md border-t border-[#2A344B] grid grid-cols-4 items-center px-2">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-15 bg-[#0B0E14]/95 backdrop-blur-md border-t border-[#2A344B] grid grid-cols-5 items-center px-1">
       {navItems.map((item) => {
         const Icon = item.icon;
         return (

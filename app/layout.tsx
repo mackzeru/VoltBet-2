@@ -6,6 +6,7 @@ import { SportsDataProvider } from '@/context/SportsDataContext';
 import { BetSlipProvider } from '@/context/BetSlipContext';
 import { Header } from '@/components/layout/Header';
 import { BottomNav } from '@/components/layout/BottomNav';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -63,6 +64,7 @@ export default function RootLayout({
               <Header />
               {children}
               <BottomNav />
+              <AuthModal />
             </BetSlipProvider>
           </SportsDataProvider>
         </WalletProvider>

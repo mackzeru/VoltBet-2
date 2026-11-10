@@ -26,12 +26,11 @@ export function MatchCard({
   const isLocked = Boolean(fixture.liveMeta?.marketLocked);
 
   const bookmaker = fixture.odds?.bookmakers?.[0];
-  const mainMarket = bookmaker?.bets.find((b) => b.id === 1); // Match Winner (1X2)
+  const mainMarket = bookmaker?.bets.find((b) => b.id === 1);
   const homeOdd = mainMarket?.values.find((v) => v.value === 'Home');
   const drawOdd = mainMarket?.values.find((v) => v.value === 'Draw');
   const awayOdd = mainMarket?.values.find((v) => v.value === 'Away');
 
-  // Calculate total individual market selections count for the deep link
   const totalMarketsCount =
     bookmaker?.bets.reduce((acc, b) => acc + b.values.length, 24) || 42;
 
@@ -56,20 +55,27 @@ export function MatchCard({
       leagueName: fixture.league.name,
       isLive,
       marketId: 1,
-      marketName: 'Match Winner',
+      marketName: '1X2',
       selectionName,
       odd: numericOdd,
     });
   };
 
   return (
-    <article className="rounded-2xl bg-[#1E2638] border border-[#2A344B] hover:border-[#2A344B]/90 p-4 transition-colors flex flex-col justify-between gap-3.5">
-      {/* Top Row: Clean Unboxed Metadata & Live/Kickoff Indicator */}
+    <article className="rounded-2xl bg-[#1E2638] border border-[#2A344B] hover:border-[#2A344B]/90 p-3.5 transition-colors flex flex-col justify-between gap-3">
+      {/* Top Row: League Logo + League Name & Live/Kickoff Time */}
       <div className="flex items-center justify-between gap-2 text-xs text-[#94A3B8]">
-        <div className="flex items-center gap-1.5 min-w-0 truncate">
-          <span className="font-medium text-white truncate">{fixture.league.name}</span>
-          <span aria-hidden="true">·</span>
-          <span className="truncate">{fixture.league.country}</span>
+        <div className="flex items-center gap-2 min-w-0 truncate">
+          {fixture.league.logo && (
+            <TeamCrest
+              name={fixture.league.name}
+              logo={fixture.league.logo}
+              size="xs"
+            />
+          )}
+          <span className="font-medium text-white truncate">
+            {fixture.league.name}
+          </span>
         </div>
 
         <div className="flex items-center gap-2 shrink-0 font-mono tabular-nums">
@@ -94,59 +100,57 @@ export function MatchCard({
       {/* Teams & Scoreline Section */}
       <Link
         href={`/matches/${fixture.fixture.id}`}
-        className="group block space-y-2.5 focus:outline-none"
+        className="group block space-y-2 focus:outline-none"
       >
-        {/* Home Team Row */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <TeamCrest
               name={fixture.teams.home.name}
+              logo={fixture.teams.home.logo}
               shortCode={fixture.teams.home.shortCode}
               primaryColor={fixture.teams.home.primaryColor}
+              secondaryColor={fixture.teams.home.secondaryColor}
               size="sm"
             />
-            <span className="text-sm sm:text-base font-semibold text-white group-hover:text-[#00E676] transition-colors truncate">
+            <span className="text-sm font-semibold text-white group-hover:text-[#00E676] transition-colors truncate">
               {fixture.teams.home.name}
             </span>
           </div>
           {isLive && (
-            <span className="font-mono tabular-nums text-base sm:text-lg font-bold text-white shrink-0">
+            <span className="font-mono tabular-nums text-base font-bold text-white shrink-0">
               {fixture.goals.home ?? 0}
             </span>
           )}
         </div>
 
-        {/* Away Team Row */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <TeamCrest
               name={fixture.teams.away.name}
+              logo={fixture.teams.away.logo}
               shortCode={fixture.teams.away.shortCode}
               primaryColor={fixture.teams.away.primaryColor}
+              secondaryColor={fixture.teams.away.secondaryColor}
               size="sm"
             />
-            <span className="text-sm sm:text-base font-semibold text-white group-hover:text-[#00E676] transition-colors truncate">
+            <span className="text-sm font-semibold text-white group-hover:text-[#00E676] transition-colors truncate">
               {fixture.teams.away.name}
             </span>
           </div>
           {isLive && (
-            <span className="font-mono tabular-nums text-base sm:text-lg font-bold text-white shrink-0">
+            <span className="font-mono tabular-nums text-base font-bold text-white shrink-0">
               {fixture.goals.away ?? 0}
             </span>
           )}
         </div>
       </Link>
 
-      {/* Optional Live Micro-Stats Strip (For Live Hub or Active In-Play cards) */}
+      {/* Live Micro-Stats Strip */}
       {(showMicroStats || isLive) && fixture.liveMeta && (
         <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#2A344B]/60 text-[11px] text-[#94A3B8] font-mono tabular-nums">
-          <div className="flex items-center gap-2 truncate">
-            <span>
-              DA: {fixture.liveMeta.dangerousAttacksHome}-{fixture.liveMeta.dangerousAttacksAway}
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>Corners: {fixture.liveMeta.recentCorners}</span>
-          </div>
+          <span>
+            Attacks {fixture.liveMeta.dangerousAttacksHome}-{fixture.liveMeta.dangerousAttacksAway} · Corners {fixture.liveMeta.recentCorners}
+          </span>
 
           <span
             className={`inline-flex items-center gap-1 font-sans text-[11px] font-medium truncate ${
@@ -170,7 +174,7 @@ export function MatchCard({
 
       {/* Quick-Bet 1X2 Market Odds Bar */}
       {mainMarket && (
-        <div className="grid grid-cols-3 gap-2 pt-0.5">
+        <div className="grid grid-cols-3 gap-2">
           {homeOdd && (
             <OddsButton
               label="1"
@@ -204,32 +208,29 @@ export function MatchCard({
         </div>
       )}
 
-      {/* Footer Row: Boost Info & Deep Market Expander */}
+      {/* Footer Row: Boost or Venue + Deep Market Expander */}
       <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#2A344B]/60">
         {fixture.featuredBoost ? (
           <div className="inline-flex items-center gap-1.5 text-xs text-[#00E676] truncate">
             <Zap className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate font-medium">
-              {fixture.featuredBoost.selectionName}:{' '}
-              <span className="line-through text-[#94A3B8] font-mono tabular-nums mr-1">
-                {fixture.featuredBoost.boostedFrom}
-              </span>
+              {fixture.featuredBoost.selectionName}{' '}
               <span className="font-mono tabular-nums font-bold">
                 {fixture.featuredBoost.boostedTo}
               </span>
             </span>
           </div>
         ) : (
-          <span className="text-xs text-[#94A3B8] truncate">
-            {fixture.fixture.venue.name} · {fixture.league.round}
+          <span className="text-[11px] text-[#94A3B8] truncate">
+            {fixture.fixture.venue.name}
           </span>
         )}
 
         <Link
           href={`/matches/${fixture.fixture.id}`}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-white hover:text-[#00E676] transition-colors whitespace-nowrap shrink-0 min-h-[32px] px-1"
+          className="inline-flex items-center gap-0.5 text-xs font-semibold text-white hover:text-[#00E676] transition-colors whitespace-nowrap shrink-0"
         >
-          <span>+{totalMarketsCount} Markets</span>
+          <span>+{totalMarketsCount}</span>
           <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>

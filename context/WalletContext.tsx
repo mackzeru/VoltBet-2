@@ -5,6 +5,7 @@ import {
   DepositTransaction,
   PaymentMethodType,
   WalletNotification,
+  UserProfile,
 } from '@/types/api-football';
 import { useTelegram } from '@/hooks/useTelegram';
 
@@ -16,8 +17,82 @@ interface SubmitDepositInput {
   screenshotPreviewUrl: string;
 }
 
+interface SubmitWithdrawalInput {
+  method: PaymentMethodType;
+  amount: number;
+  destinationAccount: string;
+}
+
+export interface DemoAccountPreset {
+  profile: UserProfile;
+  initialBalance: number;
+  initialBonus: number;
+}
+
+export const DEMO_ACCOUNT_PRESETS: DemoAccountPreset[] = [
+  {
+    profile: {
+      id: 'usr-dawit-01',
+      fullName: 'Dawit Tadesse',
+      username: 'dawit_volt_et',
+      phone: '+251 911 248 900',
+      email: 'dawit.t@voltbet.et',
+      vipTier: 'Platinum VIP',
+      vipPoints: 8420,
+      kycVerified: true,
+      joinedDate: 'Jan 2026',
+      defaultStake: 500,
+      oddsFormat: 'decimal',
+      avatarColor: '#00E676',
+    },
+    initialBalance: 100000.0,
+    initialBonus: 2500.0,
+  },
+  {
+    profile: {
+      id: 'usr-yonas-02',
+      fullName: 'Yonas Abebe',
+      username: 'yonas_pro_et',
+      phone: '+251 922 610 441',
+      email: 'yonas.a@voltbet.et',
+      vipTier: 'Gold VIP',
+      vipPoints: 3910,
+      kycVerified: true,
+      joinedDate: 'Apr 2026',
+      defaultStake: 250,
+      oddsFormat: 'decimal',
+      avatarColor: '#38BDF8',
+    },
+    initialBalance: 28500.0,
+    initialBonus: 1000.0,
+  },
+  {
+    profile: {
+      id: 'usr-meron-03',
+      fullName: 'Meron Hailu',
+      username: 'meron_addis',
+      phone: '+251 913 882 109',
+      email: 'meron.h@voltbet.et',
+      vipTier: 'Silver',
+      vipPoints: 1120,
+      kycVerified: false,
+      joinedDate: 'Sep 2026',
+      defaultStake: 100,
+      oddsFormat: 'decimal',
+      avatarColor: '#A855F7',
+    },
+    initialBalance: 7500.0,
+    initialBonus: 500.0,
+  },
+];
+
 interface WalletContextValue {
-  balance: number; // in ETB
+  isAuthenticated: boolean;
+  isAuthModalOpen: boolean;
+  setIsAuthModalOpen: (open: boolean) => void;
+  userProfile: UserProfile;
+  balance: number;
+  bonusBalance: number;
   lifetimeWinnings: number;
   transactions: DepositTransaction[];
   notifications: WalletNotification[];
@@ -25,10 +100,20 @@ interface WalletContextValue {
   deductStake: (amount: number) => boolean;
   creditWinnings: (amount: number, label: string) => void;
   submitDeposit: (input: SubmitDepositInput) => DepositTransaction;
+  submitWithdrawal: (input: SubmitWithdrawalInput) => {
+    success: boolean;
+    error?: string;
+    tx?: DepositTransaction;
+  };
   approveDeposit: (transactionId: string) => void;
   rejectDeposit: (transactionId: string) => void;
   approveAllPendingDeposits: () => number;
+  claimDailyBonus: () => boolean;
   markAllNotificationsRead: () => void;
+  switchDemoAccount: (presetId: string) => void;
+  loginWithPhone: (phone: string, name?: string) => void;
+  logout: () => void;
+  updateProfilePreferences: (updates: Partial<UserProfile>) => void;
 }
 
 const WalletContext = createContext<WalletContextValue | undefined>(undefined);
@@ -36,6 +121,7 @@ const WalletContext = createContext<WalletContextValue | undefined>(undefined);
 const INITIAL_TRANSACTIONS: DepositTransaction[] = [
   {
     id: 'DEP-90418-ET',
+    type: 'DEPOSIT',
     createdAt: '2026-11-10 18:12',
     method: 'Telebirr',
     amount: 15000,
@@ -46,6 +132,7 @@ const INITIAL_TRANSACTIONS: DepositTransaction[] = [
   },
   {
     id: 'DEP-88310-ET',
+    type: 'DEPOSIT',
     createdAt: '2026-11-09 21:40',
     method: 'Commercial Bank of Ethiopia (CBE Birr)',
     amount: 50000,
@@ -55,12 +142,13 @@ const INITIAL_TRANSACTIONS: DepositTransaction[] = [
     status: 'APPROVED',
   },
   {
-    id: 'DEP-86104-ET',
-    createdAt: '2026-11-08 14:05',
-    method: 'USDT (TRC-20)',
-    amount: 50000,
-    referenceCode: '0x7c92f81b...e31a',
-    screenshotFileName: 'tronscan_tx_receipt.png',
+    id: 'WTH-86902-ET',
+    type: 'WITHDRAWAL',
+    createdAt: '2026-11-08 16:20',
+    method: 'Telebirr',
+    amount: 8500,
+    referenceCode: '+251 911 248 900',
+    screenshotFileName: 'Instant Payout',
     screenshotPreviewUrl: '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
     status: 'APPROVED',
   },
@@ -70,7 +158,7 @@ const INITIAL_NOTIFICATIONS: WalletNotification[] = [
   {
     id: 'notif-1',
     title: 'Welcome to VoltBet ETB',
-    message: 'Your demo trading balance of 100,000.00 ETB is active.',
+    message: 'Active balance: 100,000.00 ETB + 2,500.00 ETB Bonus.',
     timestamp: 'Just now',
     type: 'info',
     read: false,
@@ -78,21 +166,29 @@ const INITIAL_NOTIFICATIONS: WalletNotification[] = [
   {
     id: 'notif-2',
     title: 'Pending Telebirr Deposit',
-    message: 'Deposit #DEP-90418-ET (15,000 ETB) is awaiting admin verification.',
+    message: 'Deposit #DEP-90418-ET (15,000 ETB) awaiting approval.',
     timestamp: '12m ago',
     type: 'deposit',
     read: false,
   },
 ];
 
-const STORAGE_KEY = 'voltbet_wallet_state_v1';
+const STORAGE_KEY = 'voltbet_wallet_state_v2';
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const { hapticNotification } = useTelegram();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [userProfile, setUserProfile] = useState<UserProfile>(
+    DEMO_ACCOUNT_PRESETS[0].profile
+  );
   const [balance, setBalance] = useState<number>(100000.0);
+  const [bonusBalance, setBonusBalance] = useState<number>(2500.0);
   const [lifetimeWinnings, setLifetimeWinnings] = useState<number>(42850.0);
-  const [transactions, setTransactions] = useState<DepositTransaction[]>(INITIAL_TRANSACTIONS);
-  const [notifications, setNotifications] = useState<WalletNotification[]>(INITIAL_NOTIFICATIONS);
+  const [transactions, setTransactions] =
+    useState<DepositTransaction[]>(INITIAL_TRANSACTIONS);
+  const [notifications, setNotifications] =
+    useState<WalletNotification[]>(INITIAL_NOTIFICATIONS);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -101,10 +197,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
+          if (typeof parsed.isAuthenticated === 'boolean')
+            setIsAuthenticated(parsed.isAuthenticated);
+          if (parsed.userProfile) setUserProfile(parsed.userProfile);
           if (typeof parsed.balance === 'number') setBalance(parsed.balance);
+          if (typeof parsed.bonusBalance === 'number')
+            setBonusBalance(parsed.bonusBalance);
           if (typeof parsed.lifetimeWinnings === 'number')
             setLifetimeWinnings(parsed.lifetimeWinnings);
-          if (Array.isArray(parsed.transactions)) setTransactions(parsed.transactions);
+          if (Array.isArray(parsed.transactions))
+            setTransactions(parsed.transactions);
         }
       } catch {
         // ignore storage errors
@@ -119,12 +221,27 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ balance, lifetimeWinnings, transactions })
+        JSON.stringify({
+          isAuthenticated,
+          userProfile,
+          balance,
+          bonusBalance,
+          lifetimeWinnings,
+          transactions,
+        })
       );
     } catch {
       // ignore
     }
-  }, [balance, lifetimeWinnings, transactions, hydrated]);
+  }, [
+    isAuthenticated,
+    userProfile,
+    balance,
+    bonusBalance,
+    lifetimeWinnings,
+    transactions,
+    hydrated,
+  ]);
 
   const addNotification = useCallback(
     (title: string, message: string, type: WalletNotification['type']) => {
@@ -143,14 +260,22 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   const deductStake = useCallback(
     (amount: number): boolean => {
+      if (!isAuthenticated) {
+        setIsAuthModalOpen(true);
+        return false;
+      }
       if (amount <= 0 || amount > balance) {
         hapticNotification('error');
         return false;
       }
       setBalance((prev) => Number((prev - amount).toFixed(2)));
+      setUserProfile((prev) => ({
+        ...prev,
+        vipPoints: prev.vipPoints + Math.max(1, Math.floor(amount / 50)),
+      }));
       return true;
     },
-    [balance, hapticNotification]
+    [isAuthenticated, balance, hapticNotification]
   );
 
   const creditWinnings = useCallback(
@@ -172,14 +297,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     (input: SubmitDepositInput): DepositTransaction => {
       const randomNum = Math.floor(10000 + Math.random() * 89999);
       const now = new Date();
-      const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
-        now.getDate()
-      ).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(
-        now.getMinutes()
-      ).padStart(2, '0')}`;
+      const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        '0'
+      )}-${String(now.getDate()).padStart(2, '0')} ${String(
+        now.getHours()
+      ).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
       const newTx: DepositTransaction = {
         id: `DEP-${randomNum}-ET`,
+        type: 'DEPOSIT',
         createdAt: timeStr,
         method: input.method,
         amount: Number(input.amount.toFixed(2)),
@@ -191,14 +318,67 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
       setTransactions((prev) => [newTx, ...prev]);
       addNotification(
-        'Deposit Ticket Submitted',
-        `${newTx.amount.toLocaleString()} ETB via ${newTx.method} is pending review.`,
+        'Deposit Submitted',
+        `${newTx.amount.toLocaleString()} ETB via ${newTx.method} is pending approval.`,
         'deposit'
       );
       hapticNotification('success');
       return newTx;
     },
     [addNotification, hapticNotification]
+  );
+
+  const submitWithdrawal = useCallback(
+    (input: SubmitWithdrawalInput) => {
+      if (!isAuthenticated) {
+        setIsAuthModalOpen(true);
+        return { success: false, error: 'Please sign in to withdraw.' };
+      }
+      if (input.amount <= 0) {
+        return { success: false, error: 'Enter a valid ETB withdrawal amount.' };
+      }
+      if (input.amount > balance) {
+        hapticNotification('error');
+        return {
+          success: false,
+          error: 'Withdrawal amount exceeds available cash balance.',
+        };
+      }
+
+      const randomNum = Math.floor(10000 + Math.random() * 89999);
+      const now = new Date();
+      const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        '0'
+      )}-${String(now.getDate()).padStart(2, '0')} ${String(
+        now.getHours()
+      ).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      setBalance((prev) => Number((prev - input.amount).toFixed(2)));
+
+      const newTx: DepositTransaction = {
+        id: `WTH-${randomNum}-ET`,
+        type: 'WITHDRAWAL',
+        createdAt: timeStr,
+        method: input.method,
+        amount: Number(input.amount.toFixed(2)),
+        referenceCode: input.destinationAccount || userProfile.phone,
+        screenshotFileName: 'Instant Withdrawal',
+        screenshotPreviewUrl:
+          '/assets/aistudio/Gemini_Generated_Image_z2jjacz2jjacz2jj_1f18e757.jpeg',
+        status: 'APPROVED',
+      };
+
+      setTransactions((prev) => [newTx, ...prev]);
+      addNotification(
+        'Withdrawal Processed',
+        `-${newTx.amount.toLocaleString()} ETB sent to ${input.method} (${newTx.referenceCode}).`,
+        'deposit'
+      );
+      hapticNotification('success');
+      return { success: true, tx: newTx };
+    },
+    [isAuthenticated, balance, userProfile.phone, addNotification, hapticNotification]
   );
 
   const approveDeposit = useCallback(
@@ -210,7 +390,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         setBalance((b) => Number((b + target.amount).toFixed(2)));
         addNotification(
           'Deposit Approved',
-          `+${target.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })} ETB (${target.method}) credited to your wallet.`,
+          `+${target.amount.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+          })} ETB (${target.method}) credited.`,
           'deposit'
         );
         hapticNotification('success');
@@ -234,7 +416,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       );
       addNotification(
         'Deposit Rejected',
-        `Ticket ${transactionId} was marked rejected in simulation.`,
+        `Ticket ${transactionId} marked rejected.`,
         'info'
       );
       hapticNotification('warning');
@@ -260,10 +442,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     if (approvedCount > 0) {
       setBalance((b) => Number((b + approvedTotal).toFixed(2)));
       addNotification(
-        'Admin Simulator: Deposits Approved',
-        `Approved ${approvedCount} pending ticket(s) totaling +${approvedTotal.toLocaleString('en-US', {
+        'Deposits Approved',
+        `Approved ${approvedCount} ticket(s) (+${approvedTotal.toLocaleString('en-US', {
           minimumFractionDigits: 2,
-        })} ETB.`,
+        })} ETB).`,
         'deposit'
       );
       hapticNotification('success');
@@ -271,6 +453,80 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
     return approvedCount;
   }, [addNotification, hapticNotification]);
+
+  const claimDailyBonus = useCallback((): boolean => {
+    setBonusBalance((prev) => Number((prev + 500).toFixed(2)));
+    setBalance((prev) => Number((prev + 500).toFixed(2)));
+    addNotification(
+      'VIP Reload Bonus Claimed',
+      '+500.00 ETB added to your playable balance.',
+      'win'
+    );
+    hapticNotification('success');
+    return true;
+  }, [addNotification, hapticNotification]);
+
+  const switchDemoAccount = useCallback(
+    (presetId: string) => {
+      const preset = DEMO_ACCOUNT_PRESETS.find((p) => p.profile.id === presetId);
+      if (!preset) return;
+      setUserProfile(preset.profile);
+      setBalance(preset.initialBalance);
+      setBonusBalance(preset.initialBonus);
+      setIsAuthenticated(true);
+      setIsAuthModalOpen(false);
+      addNotification(
+        'Switched Account',
+        `Signed in as ${preset.profile.fullName} (@${preset.profile.username}).`,
+        'info'
+      );
+      hapticNotification('success');
+    },
+    [addNotification, hapticNotification]
+  );
+
+  const loginWithPhone = useCallback(
+    (phone: string, name?: string) => {
+      const cleanName = name?.trim() || 'Abebe Bikila';
+      const cleanUsername = cleanName.toLowerCase().replace(/\s+/g, '_') + '_et';
+      const customProfile: UserProfile = {
+        id: `usr-${Date.now()}`,
+        fullName: cleanName,
+        username: cleanUsername,
+        phone: phone.trim() || '+251 911 550 112',
+        email: `${cleanUsername}@voltbet.et`,
+        vipTier: 'Gold VIP',
+        vipPoints: 2500,
+        kycVerified: true,
+        joinedDate: 'Nov 2026',
+        defaultStake: 500,
+        oddsFormat: 'decimal',
+        avatarColor: '#00E676',
+      };
+      setUserProfile(customProfile);
+      if (!isAuthenticated) {
+        setBalance((prev) => (prev > 0 ? prev : 50000.0));
+      }
+      setIsAuthenticated(true);
+      setIsAuthModalOpen(false);
+      addNotification(
+        'Signed In Successfully',
+        `Welcome back, ${customProfile.fullName}!`,
+        'info'
+      );
+      hapticNotification('success');
+    },
+    [isAuthenticated, addNotification, hapticNotification]
+  );
+
+  const logout = useCallback(() => {
+    setIsAuthenticated(false);
+    hapticNotification('warning');
+  }, [hapticNotification]);
+
+  const updateProfilePreferences = useCallback((updates: Partial<UserProfile>) => {
+    setUserProfile((prev) => ({ ...prev, ...updates }));
+  }, []);
 
   const markAllNotificationsRead = useCallback(() => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
@@ -281,7 +537,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
     <WalletContext.Provider
       value={{
+        isAuthenticated,
+        isAuthModalOpen,
+        setIsAuthModalOpen,
+        userProfile,
         balance,
+        bonusBalance,
         lifetimeWinnings,
         transactions,
         notifications,
@@ -289,10 +550,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         deductStake,
         creditWinnings,
         submitDeposit,
+        submitWithdrawal,
         approveDeposit,
         rejectDeposit,
         approveAllPendingDeposits,
+        claimDailyBonus,
         markAllNotificationsRead,
+        switchDemoAccount,
+        loginWithPhone,
+        logout,
+        updateProfilePreferences,
       }}
     >
       {children}

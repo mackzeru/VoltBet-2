@@ -4,6 +4,8 @@ export type MatchShortStatus = 'NS' | '1H' | 'HT' | '2H' | 'FT' | 'LIVE';
 
 export type SportCategory = 'Soccer' | 'Basketball' | 'Tennis';
 
+export type OddsFormat = 'decimal' | 'american';
+
 export interface ApiFootballEvent {
   time: {
     elapsed: number;
@@ -40,8 +42,8 @@ export interface ApiFootballTeamStat {
 }
 
 export interface ApiFootballOddValue {
-  value: string; // e.g., "Home", "Draw", "Away", "Over 2.5", "Under 2.5", "Odd", "Even", "Yes", "No"
-  odd: string; // e.g., "1.95", "2.10", "4.50"
+  value: string;
+  odd: string;
   previousOdd?: string;
   drift?: 'up' | 'down' | null;
   lastUpdated?: number;
@@ -49,7 +51,7 @@ export interface ApiFootballOddValue {
 }
 
 export interface ApiFootballBetMarket {
-  id: number; // 1 = Match Winner, 5 = Goals Over/Under, 8 = BTTS, 12 = Double Chance, 13 = 1st Half Winner, 20 = Odd/Even, 26 = Red Card, 40 = Penalty Awarded
+  id: number;
   name: string;
   suspended?: boolean;
   suspensionReason?: string;
@@ -152,6 +154,7 @@ export interface OutrightTournamentMarket {
   id: number;
   leagueId: number;
   leagueName: string;
+  leagueLogo: string;
   country: string;
   season: string;
   title: string;
@@ -159,6 +162,7 @@ export interface OutrightTournamentMarket {
   favorites: Array<{
     teamId: number;
     teamName: string;
+    teamLogo: string;
     shortCode: string;
     primaryColor: string;
     odd: string;
@@ -167,19 +171,21 @@ export interface OutrightTournamentMarket {
 }
 
 export interface BetSelection {
-  selectionId: string; // `${fixtureId}-${marketId}-${value}`
+  selectionId: string;
   fixtureId: number;
   matchTitle: string;
   leagueName: string;
+  homeLogo?: string;
+  awayLogo?: string;
   isLive: boolean;
   marketId: number;
   marketName: string;
   selectionName: string;
   odd: number;
-  lockedOdd: number; // Odd when added to slip
+  lockedOdd: number;
   driftDirection: 'up' | 'down' | null;
   suspended: boolean;
-  singleStake: number; // Used when slip is in 'single' mode
+  singleStake: number;
 }
 
 export type BetSlipMode = 'single' | 'multi';
@@ -198,7 +204,7 @@ export interface PlacedBetLeg {
 }
 
 export interface PlacedBet {
-  id: string; // e.g. "#BET-89421-ET"
+  id: string;
   createdAt: string;
   mode: BetSlipMode;
   legs: PlacedBetLeg[];
@@ -221,9 +227,10 @@ export type DepositStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export interface DepositTransaction {
   id: string;
+  type?: 'DEPOSIT' | 'WITHDRAWAL';
   createdAt: string;
   method: PaymentMethodType;
-  amount: number; // in ETB
+  amount: number;
   referenceCode: string;
   screenshotFileName: string;
   screenshotPreviewUrl: string;
@@ -237,4 +244,19 @@ export interface WalletNotification {
   timestamp: string;
   type: 'win' | 'deposit' | 'drift' | 'info';
   read: boolean;
+}
+
+export interface UserProfile {
+  id: string;
+  fullName: string;
+  username: string;
+  phone: string;
+  email: string;
+  vipTier: 'Silver' | 'Gold VIP' | 'Platinum VIP';
+  vipPoints: number;
+  kycVerified: boolean;
+  joinedDate: string;
+  defaultStake: number;
+  oddsFormat: OddsFormat;
+  avatarColor: string;
 }
